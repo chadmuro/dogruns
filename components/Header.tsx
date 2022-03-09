@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Button from "./shared/Button";
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -17,12 +18,12 @@ const Header: React.FC = () => {
 
   let right = (
     <div>
-      <button>Login</button>
+      <Button text="Login" />
     </div>
   );
 
   return (
-    <nav className="flex p-2 items-center justify-between">
+    <nav className="flex p-4 items-center justify-between">
       {left}
       {right}
     </nav>

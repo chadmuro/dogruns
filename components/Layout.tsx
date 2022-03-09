@@ -8,7 +8,7 @@ type Props = {
 const Layout: React.FC<Props> = (props) => (
   <div>
     <Header />
-    <div className="layout">{props.children}</div>
+    <div className="px-4">{props.children}</div>
     <style jsx global>{`
       html {
         box-sizing: border-box;
@@ -27,7 +27,8 @@ const Layout: React.FC<Props> = (props) => (
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
           "Segoe UI Symbol";
-        background: rgba(0, 0, 0, 0.05);
+        background: #0f172a; // Slate 900
+        color: #fff;
       }
 
       input,
@@ -37,11 +38,6 @@ const Layout: React.FC<Props> = (props) => (
 
       button {
         cursor: pointer;
-      }
-    `}</style>
-    <style jsx>{`
-      .layout {
-        padding: 0 2rem;
       }
     `}</style>
   </div>
