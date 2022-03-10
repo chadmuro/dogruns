@@ -10,21 +10,59 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Post {
-  id        Int     @default(autoincrement()) @id
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  Int?
+model Park {
+  id              String     @id @default(cuid())
+  name            String
+  address         String
+  googleMapLink   String
+  mainImage       String
+  type            ParkType?
+  price           Int
+  published       Boolean    @default(false)
+  User            User?      @relation(fields: [submittedUserId], references: [id])
+  submittedUserId String?
+  reviews         Review[]
+  parkHours       ParkHours?
+}
+
+enum ParkType {
+  OUTDOOR
+  INDOOR
+  BOTH
 }
 
 model User {
-  id            Int       @default(autoincrement()) @id
-  name          String?
-  email         String?   @unique
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  posts         Post[]
+  id        String   @id @default(cuid())
+  name      String
+  email     String?  @unique
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  parks     Park[]
+  reviews   Review[]
+
   @@map(name: "users")
+}
+
+model Review {
+  id      String  @id @default(cuid())
+  comment String?
+  rating  Int
+  Park    Park?   @relation(fields: [parkId], references: [id])
+  parkId  String?
+  User    User?   @relation(fields: [userId], references: [id])
+  userId  String?
+}
+
+model ParkHours {
+  id        String @id @default(cuid())
+  monday    String
+  tuesday   String
+  wednesday String
+  thursday  String
+  friday    String
+  saturday  String
+  sunday    String
+  extra     String
+  park      Park   @relation(fields: [parkId], references: [id])
+  parkId    String @unique
 }

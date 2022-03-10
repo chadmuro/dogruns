@@ -1,61 +1,34 @@
 import React from "react";
 import { GetStaticProps } from "next";
 import Layout from "../components/Layout";
-import Post, { PostProps } from "../components/Post";
 import prisma from "../lib/prisma";
+import { Park } from "@prisma/client";
 import ParkCard from "../components/shared/ParkCard";
 
 export const getStaticProps: GetStaticProps = async () => {
-  const feed = await prisma.post.findMany({
+  const feed = await prisma.park.findMany({
     where: { published: true },
-    include: {
-      author: {
-        select: { name: true },
-      },
-    },
   });
   return { props: { feed } };
 };
 
 type Props = {
-  feed: PostProps[];
+  feed: Park[];
 };
 
-const Blog: React.FC<Props> = (props) => {
+const Home: React.FC<Props> = (props) => {
   return (
     <Layout>
       <div className="page">
-        <h1>Public Feed</h1>
-        <main>
-          {props.feed.map((post) => (
-            <div key={post.id} className="post">
-              <Post post={post} />
-            </div>
+        <h1>Top Rated</h1>
+        <main className="grid grid-cols-1 sm:grid-cols-3 gap-4 justify-center items-stretch">
+          {props.feed.map((park) => (
+            <ParkCard key={park.id} park={park} />
           ))}
-          <ParkCard
-            id="1"
-            name="Minato Dog Park"
-            address="1 Chome-2-28 Konan, Minato City, Tokyo 108-0075"
-            imageUrl="https://images.unsplash.com/photo-1602684379319-1de467ca74e5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80"
-          />
         </main>
       </div>
-      <style jsx>{`
-        .post {
-          background: white;
-          transition: box-shadow 0.1s ease-in;
-        }
-
-        .post:hover {
-          box-shadow: 1px 1px 3px #aaa;
-        }
-
-        .post + .post {
-          margin-top: 2rem;
-        }
-      `}</style>
     </Layout>
   );
 };
 
-export default Blog;
+export default Home;
