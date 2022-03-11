@@ -1,9 +1,10 @@
-import React from "react";
 import { GetStaticProps } from "next";
 import Layout from "../components/Layout";
 import prisma from "../lib/prisma";
 import { Park } from "@prisma/client";
-import ParkCard from "../components/shared/ParkCard";
+import Hero from "../components/home/Hero";
+import ParkCard from "../components/home/ParkCard";
+import Button from "../components/shared/Button";
 
 export const getStaticProps: GetStaticProps = async () => {
   const feed = await prisma.park.findMany({
@@ -16,17 +17,30 @@ type Props = {
   feed: Park[];
 };
 
-const Home: React.FC<Props> = (props) => {
+const Home = ({ feed }: Props) => {
   return (
     <Layout>
-      <div className="page">
-        <h1>Top Rated</h1>
-        <main className="grid grid-cols-1 sm:grid-cols-3 gap-4 justify-center items-stretch">
-          {props.feed.map((park) => (
-            <ParkCard key={park.id} park={park} />
-          ))}
-        </main>
-      </div>
+      <Hero />
+      <main>
+        <section className="my-20">
+          <h2 className="text-xl">Top Rated</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 justify-center items-stretch">
+            {feed.map((park) => (
+              <ParkCard key={park.id} park={park} />
+            ))}
+          </div>
+          <Button variant="secondary" type="button" text="See more..." />
+        </section>
+        <section className="my-20">
+          <h2 className="text-xl">Recently Added</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 justify-center items-stretch">
+            {feed.map((park) => (
+              <ParkCard key={park.id} park={park} />
+            ))}
+          </div>
+          <Button variant="secondary" type="button" text="See more..." />
+        </section>
+      </main>
     </Layout>
   );
 };

@@ -1,14 +1,18 @@
 import React, { ReactNode } from "react";
 import Header from "./Header";
+import Footer from "./Footer";
 
 type Props = {
   children: ReactNode;
 };
 
 const Layout: React.FC<Props> = (props) => (
-  <div>
+  <div className="min-h-screen flex flex-col justify-center items-stretch">
     <Header />
-    <div className="px-4 max-w-screen-xl mx-auto">{props.children}</div>
+    <div className="px-4 max-w-screen-xl mx-auto flex-1 w-full">
+      {props.children}
+    </div>
+    <Footer />
     <style jsx global>{`
       html {
         box-sizing: border-box;

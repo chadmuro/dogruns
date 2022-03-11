@@ -5,7 +5,7 @@ import Input from "../components/shared/Input";
 const Login = () => {
   return (
     <Layout>
-      <form className="max-w-sm">
+      <form className="max-w-sm mx-auto">
         <Input
           label="Your email"
           name="email"

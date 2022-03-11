@@ -1,33 +1,30 @@
-import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Button from "./shared/Button";
 
-const Header: React.FC = () => {
+const Header = () => {
   const router = useRouter();
   const isActive: (pathname: string) => boolean = (pathname) =>
     router.pathname === pathname;
 
   let left = (
-    <div>
-      <Link href="/">
-        <a data-active={isActive("/")}>Dog Runs</a>
-      </Link>
-    </div>
+    <Link href="/">
+      <a data-active={isActive("/")} className="text-lg">
+        Dog Runs
+      </a>
+    </Link>
   );
 
   let right = (
-    <div>
-      <Link href="/login">
-        <a>
-          <Button type="button" text="Login" />
-        </a>
-      </Link>
-    </div>
+    <Link href="/login">
+      <a>
+        <Button type="button" text="Login" />
+      </a>
+    </Link>
   );
 
   return (
-    <nav className="flex p-4 items-center justify-between">
+    <nav className="flex p-4 items-center justify-between max-w-screen-xl mx-auto w-full">
       {left}
       {right}
     </nav>
