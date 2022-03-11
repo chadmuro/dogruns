@@ -18,7 +18,11 @@ const Header: React.FC = () => {
 
   let right = (
     <div>
-      <Button text="Login" />
+      <Link href="/login">
+        <a>
+          <Button type="button" text="Login" />
+        </a>
+      </Link>
     </div>
   );
 

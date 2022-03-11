@@ -1,5 +1,7 @@
+import Layout from "../../components/Layout";
+
 const ParkDetails = () => {
-  return <div>Park Details</div>;
+  return <Layout>Park Details</Layout>;
 };
 
 export default ParkDetails;
