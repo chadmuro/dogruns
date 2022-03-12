@@ -1,35 +1,37 @@
 import { GetStaticProps } from "next";
-import Layout from "../components/Layout";
-import prisma from "../lib/prisma";
 import { Park } from "@prisma/client";
+import prisma from "../lib/prisma";
+import Layout from "../components/Layout";
 import Hero from "../components/home/Hero";
 import ParkCard from "../components/home/ParkCard";
 import Button from "../components/shared/Button";
 
 export const getStaticProps: GetStaticProps = async () => {
-  const feed = await prisma.park.findMany({
+  const parks = await prisma.park.findMany({
     where: { published: true },
   });
-  return { props: { feed } };
+  return { props: { parks } };
 };
 
 type Props = {
-  feed: Park[];
+  parks: Park[];
 };
 
-const Home = ({ feed }: Props) => {
+const Home = ({ parks }: Props) => {
   return (
     <Layout>
-      <Hero />
       <main>
+        <Hero />
         <section className="my-20">
           <h2 className="text-xl">Top Rated</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 justify-center items-stretch">
-            {feed.map((park) => (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 justify-center items-stretch mb-8">
+            {parks.map((park) => (
               <ParkCard key={park.id} park={park} />
             ))}
           </div>
-          <Button variant="secondary" type="button" text="See more..." />
+          <div className="flex justify-center">
+            <Button variant="secondary" type="button" text="See more..." />
+          </div>
         </section>
       </main>
     </Layout>
