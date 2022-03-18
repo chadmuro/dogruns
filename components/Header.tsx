@@ -2,6 +2,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Button from "./shared/Button";
+import { signOut, useSession } from "next-auth/react";
 
 interface HeaderProps {
   darkMode: boolean;
@@ -13,6 +14,25 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
   const router = useRouter();
   const isActive: (pathname: string) => boolean = (pathname) =>
     router.pathname === pathname;
+
+  const { data: session, status } = useSession();
+
+  let authButton;
+  if (status === "loading") {
+    authButton = <div className="w-24" />;
+  } else if (!session) {
+    authButton = (
+      <Link href="/auth/signin">
+        <a>
+          <Button type="button" text="Login" />
+        </a>
+      </Link>
+    );
+  } else if (session) {
+    authButton = (
+      <Button type="button" text="Sign Out" onClick={() => signOut()} />
+    );
+  }
 
   let left = (
     <Link href="/">
@@ -42,9 +62,9 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
               d="M19 9l-7 7-7-7"
             ></path>
           </svg>
@@ -108,11 +128,8 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
           </svg>
         )}
       </button>
-      <Link href="/login">
-        <a>
-          <Button type="button" text="Login" />
-        </a>
-      </Link>
+
+      {authButton}
     </div>
   );
 
