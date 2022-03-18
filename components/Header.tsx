@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Button from "./shared/Button";
@@ -8,6 +9,7 @@ interface HeaderProps {
 }
 
 const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
+  const [openLanguage, setOpenLanguage] = useState(false);
   const router = useRouter();
   const isActive: (pathname: string) => boolean = (pathname) =>
     router.pathname === pathname;
@@ -21,7 +23,59 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
   );
 
   let right = (
-    <div className="flex items-center">
+    <div className="flex items-start">
+      <div>
+        <button
+          type="button"
+          id="dropdownButton"
+          data-dropdown-toggle="dropdown"
+          className="inline-flex items-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
+          onClick={() => setOpenLanguage(!openLanguage)}
+          onBlur={() => setOpenLanguage(false)}
+        >
+          Language
+          <svg
+            className="ml-2 w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            ></path>
+          </svg>
+        </button>
+        {/* <!-- Dropdown menu --> */}
+        <div
+          id="dropdown"
+          className={`${
+            !openLanguage && "hidden"
+          } absolute mt-2 z-10 w-44 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700`}
+        >
+          <ul className="py-1" aria-labelledby="dropdownButton">
+            <li>
+              <a
+                href="#"
+                className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+              >
+                English
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+              >
+                Japanese
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
       <button
         id="theme-toggle"
         type="button"
