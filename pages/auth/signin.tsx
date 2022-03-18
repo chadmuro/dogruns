@@ -25,7 +25,7 @@ const Signin = ({ providers }: Props) => {
               type="button"
               onClick={() =>
                 signIn(provider.id, {
-                  callbackUrl: `${basePath}}/`,
+                  callbackUrl: `${basePath}`,
                 })
               }
             >{`Sign in with ${provider.name}`}</button>
