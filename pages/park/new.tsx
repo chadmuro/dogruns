@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { useSession } from "next-auth/react";
+import Router from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -24,14 +27,31 @@ const parkSchema = yup
   .required();
 
 const NewPark = () => {
+  const { status } = useSession();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<NewParkInputs>({ resolver: yupResolver(parkSchema) });
 
-  const onSubmit: SubmitHandler<NewParkInputs> = (data) => {
-    console.log(data);
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      Router.push("/auth/signin");
+    }
+  }, [status]);
+
+  const onSubmit: SubmitHandler<NewParkInputs> = async (data) => {
+    const { name, address, google, price } = data;
+    try {
+      const body = { name, address, google, price };
+      await fetch("/api/park", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
