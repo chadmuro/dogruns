@@ -3,23 +3,16 @@ import { getSession } from 'next-auth/react';
 import prisma from '../../../lib/prisma';
 
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
-  const { name, nameJapanese, address, addressJapanese, google, price, type } = req.body;
+  const { monday, tuesday, wednesday, thursday, friday, saturday, sunday, extra, parkId } = req.body;
 
   const session = await getSession({ req });
   if (session) {
-    const result = await prisma.park.create({
+    const result = await prisma.parkHours.create({
       data: {
-        name,
-        nameJapanese,
-        address,
-        addressJapanese,
-        googleMapLink: google,
-        mainImage: "",
-        price,
-        type,
-        user: { connect: { email: session?.user?.email as string | undefined }},
+        monday, tuesday, wednesday, thursday, friday, saturday, sunday, extra, parkId
       },
     });
+    console.log(result);
     res.json(result);
   } else {
     res.status(401)

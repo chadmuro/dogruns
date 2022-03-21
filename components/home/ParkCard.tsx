@@ -1,6 +1,6 @@
 import { Park } from "@prisma/client";
 import Link from "next/link";
-import Image from "next/Image";
+import Image from "next/image";
 
 interface ParkCardProps {
   park: Park;
@@ -14,7 +14,10 @@ const ParkCard = ({ park }: ParkCardProps) => {
           <Image
             className="rounded-t-lg"
             loader={({ src, width }) => `${src}?w=${width}`}
-            src={park.mainImage}
+            src={
+              park.mainImage ||
+              "https://images.unsplash.com/photo-1568393691622-c7ba131d63b4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2062&q=80"
+            }
             alt={park.name}
             layout="fill"
             objectFit="cover"

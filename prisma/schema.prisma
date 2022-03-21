@@ -11,18 +11,20 @@ generator client {
 }
 
 model Park {
-  id            String     @id @default(cuid())
-  name          String
-  address       String
-  googleMapLink String
-  mainImage     String
-  type          ParkType?
-  price         Int
-  published     Boolean    @default(false)
-  user          User?      @relation(fields: [userId], references: [id])
-  userId        String?
-  reviews       Review[]
-  parkHours     ParkHours?
+  id              String     @id @default(cuid())
+  name            String
+  nameJapanese    String
+  address         String
+  addressJapanese String
+  googleMapLink   String
+  mainImage       String
+  type            ParkType?
+  price           String
+  published       Boolean    @default(false)
+  user            User?      @relation(fields: [userId], references: [id])
+  userId          String?
+  reviews         Review[]
+  parkHours       ParkHours?
 }
 
 enum ParkType {

@@ -7,22 +7,28 @@ import * as yup from "yup";
 import Layout from "../../components/Layout";
 import Button from "../../components/shared/Button";
 import Input from "../../components/shared/Input";
+import { ParkType } from "@prisma/client";
 
 type NewParkInputs = {
   name: string;
+  nameJapanese: string;
   address: string;
+  addressJapanese: string;
   google: string;
   // image: string;
-  price: number;
+  type: ParkType;
+  price: string;
 };
 
 const parkSchema = yup
   .object({
     name: yup.string().required("Park name is required"),
+    nameJapanese: yup.string().required("Park name is required"),
     address: yup.string().required("Park address is required"),
+    addressJapanese: yup.string().required("Park address is required"),
     google: yup.string().required("Google Map link is required"),
     // image: yup.string().required("Main mage is required"),
-    price: yup.number().min(0).integer(),
+    price: yup.string(),
   })
   .required();
 
@@ -41,14 +47,32 @@ const NewPark = () => {
   }, [status]);
 
   const onSubmit: SubmitHandler<NewParkInputs> = async (data) => {
-    const { name, address, google, price } = data;
+    const {
+      name,
+      nameJapanese,
+      address,
+      addressJapanese,
+      google,
+      price,
+      type,
+    } = data;
     try {
-      const body = { name, address, google, price };
-      await fetch("/api/park", {
+      const body = {
+        name,
+        nameJapanese,
+        address,
+        addressJapanese,
+        google,
+        type,
+        price,
+      };
+      const response = await fetch("/api/park", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
+      const data = await response.json();
+      await Router.push(`/park/draft/${data.id}`);
     } catch (err) {
       console.error(err);
     }
@@ -56,26 +80,48 @@ const NewPark = () => {
 
   return (
     <Layout>
-      <form className="max-w-sm mx-auto" onSubmit={handleSubmit(onSubmit)}>
-        <Input
-          label="Park name"
-          type="text"
-          name="name"
-          placeholder="Park name"
-          defaultValue=""
-          register={register}
-          error={errors.name}
-          autoFocus
-        />
-        <Input
-          label="Park address"
-          type="text"
-          name="address"
-          placeholder="Park address"
-          defaultValue=""
-          register={register}
-          error={errors.address}
-        />
+      <form className="max-w-sm mx-auto mb-8" onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex justify-between">
+          <Input
+            label="Park name"
+            type="text"
+            name="name"
+            placeholder="Park name"
+            defaultValue=""
+            register={register}
+            error={errors.name}
+            autoFocus
+          />
+          <Input
+            label="Park name (Japanese)"
+            type="text"
+            name="nameJapanese"
+            placeholder="Name in Japanese"
+            defaultValue=""
+            register={register}
+            error={errors.nameJapanese}
+          />
+        </div>
+        <div className="flex justify-between">
+          <Input
+            label="Park address"
+            type="text"
+            name="address"
+            placeholder="Park address"
+            defaultValue=""
+            register={register}
+            error={errors.address}
+          />
+          <Input
+            label="Park address (Japanese)"
+            type="text"
+            name="addressJapanese"
+            placeholder="Address in Japanese"
+            defaultValue=""
+            register={register}
+            error={errors.addressJapanese}
+          />
+        </div>
         <Input
           label="Google Map link"
           type="text"
@@ -103,21 +149,22 @@ const NewPark = () => {
         </label>
         <div className="mb-6">
           <select
-            id="countries"
+            {...register("type")}
+            id="type"
+            defaultValue={ParkType.INDOOR}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
-            <option>Indoor</option>
-            <option>Outdoor</option>
-            <option>Indoor/Outdoor</option>
+            <option value={ParkType.INDOOR}>Indoor</option>
+            <option value={ParkType.OUTDOOR}>Outdoor</option>
+            <option value={ParkType.BOTH}>Indoor/Outdoor</option>
           </select>
         </div>
         <Input
           label="Price"
-          type="number"
+          type="text"
           name="price"
-          min={0}
           placeholder="Price in yen"
-          defaultValue={0}
+          defaultValue=""
           register={register}
           error={errors.price}
         />
