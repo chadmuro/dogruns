@@ -17,7 +17,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   const session = await getSession({ req });
   if (!session) {
     res.statusCode = 403;
-    return { props: { drafts: [] } };
+    return { props: { park: null } };
   }
 
   const park = await prisma.park.findUnique({
@@ -55,8 +55,6 @@ const DraftPark = ({ park }: Props) => {
     formState: { errors },
   } = useForm<ParkHourInputs>();
 
-  console.log(park);
-
   useEffect(() => {
     if (status === "unauthenticated") {
       Router.push("/auth/signin");
@@ -64,7 +62,6 @@ const DraftPark = ({ park }: Props) => {
   }, [status]);
 
   const onSubmit: SubmitHandler<ParkHourInputs> = async (data) => {
-    console.log(data);
     const {
       monday,
       tuesday,

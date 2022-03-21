@@ -19,6 +19,17 @@ type Props = {
 
 const ParkDetails = ({ park }: Props) => {
   console.log(park);
+  if (!park.published) {
+    return (
+      <Layout>
+        <main>
+          <h1 className="text-4xl mb-4">{park.name}</h1>
+          <p>Park details are under review...</p>
+        </main>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <main>
@@ -41,7 +52,7 @@ const ParkDetails = ({ park }: Props) => {
             <h1 className="text-4xl mb-4">{park.name}</h1>
             <button
               type="button"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-small rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 self-baseline"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-small rounded-lg text-sm px-5 py-3 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 self-baseline"
             >
               <svg
                 className="sm:mr-2 sm:-ml-1"
@@ -128,15 +139,19 @@ const ParkDetails = ({ park }: Props) => {
                     <li>Sunday</li>
                   </ul>
                   <ul className="pl-4 flex-1">
-                    <li>{park.parkHours.monday}</li>
-                    <li>{park.parkHours.tuesday}</li>
-                    <li>{park.parkHours.wednesday}</li>
-                    <li>{park.parkHours.thursday}</li>
-                    <li>{park.parkHours.friday}</li>
-                    <li>{park.parkHours.saturday}</li>
-                    <li>{park.parkHours.sunday}</li>
+                    <li>{park.parkHours?.monday || "Not available..."}</li>
+                    <li>{park.parkHours?.tuesday || "Not available..."}</li>
+                    <li>{park.parkHours?.wednesday || "Not available..."}</li>
+                    <li>{park.parkHours?.thursday || "Not available..."}</li>
+                    <li>{park.parkHours?.friday || "Not available..."}</li>
+                    <li>{park.parkHours?.saturday || "Not available..."}</li>
+                    <li>{park.parkHours?.sunday || "Not available..."}</li>
                   </ul>
                 </div>
+                <p>
+                  {!!park.parkHours?.extra &&
+                    `Additional Information: ${park.parkHours?.extra}`}
+                </p>
               </div>
             </div>
           </div>
