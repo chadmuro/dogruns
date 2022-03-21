@@ -4,6 +4,7 @@ import { Park, ParkHours } from "@prisma/client";
 import prisma from "../../lib/prisma";
 import Layout from "../../components/Layout";
 import Reviews from "../../components/park/Reviews";
+import Rating from "../../components/park/Rating";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const park = await prisma.park.findUnique({
@@ -70,12 +71,12 @@ const ParkDetails = ({ park }: Props) => {
           <div className="flex flex-col sm:flex-row">
             <div className="mb-8 sm:mb-0 w-full sm:w-1/2">
               <h2 className="text-xl">Information:</h2>
-              <p>{park.address}</p>
+              <p className="mb-4">{park.address}</p>
               <a
                 href={park.googleMapLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 hover:bg-blue-800 rounded-lg focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 w-max"
+                className="flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 hover:bg-blue-800 rounded-lg focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 w-max mb-4"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -120,15 +121,19 @@ const ParkDetails = ({ park }: Props) => {
                 </svg>
               </a>
               <div>
-                <div>rating</div>
-                <div>Price: {park.price} yen</div>
+                <Rating />
+                <p>{`Type: ${park.type}`}</p>
+                <p>{`Price: ${park.price || "Free"}`}</p>
+                <p>{`Additional Information: ${
+                  park.additionalInformation || "None"
+                }`}</p>
               </div>
             </div>
             <div className="flex w-full sm:w-1/2">
               <div className="hidden sm:block h-64 border-l-2 border-gray-500 px-2" />
               <div className="flex flex-col sm:pl-8 md:pl-16">
                 <h2 className="text-xl">Park Hours:</h2>
-                <div className="flex leading-8">
+                <div className="flex leading-8 mb-2">
                   <ul>
                     <li>Monday</li>
                     <li>Tuesday</li>

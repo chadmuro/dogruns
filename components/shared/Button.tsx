@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  text: string;
+  text: string | React.ReactNode;
   variant?: "primary" | "secondary";
   size?: string;
 }
