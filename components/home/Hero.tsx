@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import Link from "next/Link";
+import Link from "next/link";
 import Button from "../shared/Button";
 
 const Hero = () => {

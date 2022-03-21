@@ -1,4 +1,6 @@
 import { SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import Layout from "../../components/Layout";
 import Button from "../../components/shared/Button";
 import Input from "../../components/shared/Input";
@@ -6,14 +8,27 @@ import Input from "../../components/shared/Input";
 type NewParkInputs = {
   name: string;
   address: string;
+  google: string;
+  // image: string;
+  price: number;
 };
+
+const parkSchema = yup
+  .object({
+    name: yup.string().required("Park name is required"),
+    address: yup.string().required("Park address is required"),
+    google: yup.string().required("Google Map link is required"),
+    // image: yup.string().required("Main mage is required"),
+    price: yup.number().min(0).integer(),
+  })
+  .required();
 
 const NewPark = () => {
   const {
     register,
     handleSubmit,
-    // formState: { errors },
-  } = useForm<NewParkInputs>();
+    formState: { errors },
+  } = useForm<NewParkInputs>({ resolver: yupResolver(parkSchema) });
 
   const onSubmit: SubmitHandler<NewParkInputs> = (data) => {
     console.log(data);
@@ -29,7 +44,7 @@ const NewPark = () => {
           placeholder="Park name"
           defaultValue=""
           register={register}
-          required
+          error={errors.name}
           autoFocus
         />
         <Input
@@ -39,7 +54,7 @@ const NewPark = () => {
           placeholder="Park address"
           defaultValue=""
           register={register}
-          required
+          error={errors.address}
         />
         <Input
           label="Google Map link"
@@ -48,9 +63,9 @@ const NewPark = () => {
           placeholder="Add a link to the Google Map"
           defaultValue=""
           register={register}
-          required
+          error={errors.google}
         />
-        <Input
+        {/* <Input
           label="Main image"
           type="file"
           accept="image/*"
@@ -58,8 +73,8 @@ const NewPark = () => {
           placeholder="Select a main image"
           defaultValue=""
           register={register}
-          required
-        />
+          error={errors.image}
+        /> */}
         <label
           htmlFor="countries"
           className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
@@ -82,9 +97,9 @@ const NewPark = () => {
           name="price"
           min={0}
           placeholder="Price in yen"
-          defaultValue=""
+          defaultValue={0}
           register={register}
-          required
+          error={errors.price}
         />
         <Button type="submit" text="Submit" />
       </form>
