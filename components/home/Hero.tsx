@@ -7,9 +7,6 @@ const Hero = () => {
   const { data: session } = useSession();
   const isAdmin = session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
-  console.log(session);
-  console.log(isAdmin);
-
   return (
     <div className="lg:2/6 xl:w-2/4 my-20 lg:my-40 lg:ml-16 text-left">
       <h1 className="text-6xl font-semibold text-black dark:text-white leading-none">
