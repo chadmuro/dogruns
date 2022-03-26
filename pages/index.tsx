@@ -4,7 +4,7 @@ import prisma from "../lib/prisma";
 import Layout from "../components/Layout";
 import Hero from "../components/home/Hero";
 import ParkCard from "../components/home/ParkCard";
-import Button from "../components/shared/Button";
+import StyledButton from "../components/shared/StyledButton";
 
 export const getStaticProps: GetStaticProps = async () => {
   const parks = await prisma.park.findMany({
@@ -30,7 +30,11 @@ const Home = ({ parks }: Props) => {
             ))}
           </div>
           <div className="flex justify-center">
-            <Button variant="secondary" type="button" text="See more..." />
+            <StyledButton
+              variant="secondary"
+              type="button"
+              text="See more..."
+            />
           </div>
         </section>
       </main>

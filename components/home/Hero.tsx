@@ -1,6 +1,7 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Button from "../shared/Button";
+import StyledButton from "../shared/StyledButton";
 
 const Hero = () => {
   const { data: session } = useSession();
@@ -18,11 +19,11 @@ const Hero = () => {
         Let your dogs run free and make new friends!
       </h3>
       <div className="flex items-baseline">
-        <Button type="button" text="See parks" size="lg" />
+        <StyledButton type="button" text="See parks" size="lg" />
         {!!session && (
           <Link href="/park/new">
             <a className="ml-4">
-              <Button
+              <StyledButton
                 variant="secondary"
                 type="button"
                 size="lg"
@@ -34,12 +35,7 @@ const Hero = () => {
         {isAdmin && (
           <Link href="/admin">
             <a className="ml-4">
-              <button
-                type="button"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-3 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 self-baseline"
-              >
-                Admin Page
-              </button>
+              <Button type="button" text="Admin Page" size="lg" />
             </a>
           </Link>
         )}
