@@ -7,7 +7,7 @@ import { Park } from "@prisma/client";
 import prisma from "../../../lib/prisma";
 import Layout from "../../../components/Layout";
 import Input from "../../../components/shared/Input";
-import StyledButton from "../../../components/shared/StyledButton";
+import Button from "../../../components/shared/Button";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -63,6 +63,7 @@ const DraftPark = ({ park }: Props) => {
   }, [status]);
 
   const onSubmit: SubmitHandler<ParkHourInputs> = async (data) => {
+    console.log("called once");
     setPosting(true);
     const {
       monday,
@@ -101,7 +102,7 @@ const DraftPark = ({ park }: Props) => {
 
   return (
     <Layout>
-      <main className="max-w-sm mx-auto" onSubmit={handleSubmit(onSubmit)}>
+      <main className="max-w-sm mx-auto">
         <h1 className="text-xl mb-8">{`${park.name} hours`}</h1>
         <form
           className="max-w-sm mx-auto mb-8"
@@ -180,7 +181,7 @@ const DraftPark = ({ park }: Props) => {
             register={register}
             error={errors.extra}
           />
-          <StyledButton type="submit" text="Submit" loading={posting} />
+          <Button type="submit" text="Submit" loading={posting} />
         </form>
       </main>
     </Layout>

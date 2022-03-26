@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { Park, ParkHours } from "@prisma/client";
 import { GetServerSideProps } from "next";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import { getSession, useSession } from "next-auth/react";
 import Layout from "../components/Layout";
 import prisma from "../lib/prisma";
+import SecondaryButton from "../components/shared/SecondaryButton";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -47,6 +48,18 @@ async function publishPark(id: string): Promise<void> {
 
 const Admin = ({ parks }: Props) => {
   const { status } = useSession();
+  const router = useRouter();
+
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
+
+  async function deletePark(id: string): Promise<void> {
+    await fetch(`api/park/delete/${id}`, {
+      method: "DELETE",
+    });
+    refreshData();
+  }
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -76,20 +89,20 @@ const Admin = ({ parks }: Props) => {
             <p>{`Park hours Saturday: ${park.parkHours?.saturday}`}</p>
             <p>{`Park hours Sunday: ${park.parkHours?.sunday}`}</p>
             <p>{`Park hours Extra: ${park.parkHours?.extra}`}</p>
-            <div>
-              <button
-                type="button"
-                className="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 text-center mr-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-800"
-              >
-                Edit
-              </button>
-              <button
+            <div className="flex">
+              <div className="pr-4">
+                <SecondaryButton
+                  type="button"
+                  text="Delete"
+                  variant="secondary"
+                  onClick={() => deletePark(park.id)}
+                />
+              </div>
+              <SecondaryButton
                 type="button"
                 onClick={() => publishPark(park.id)}
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-small rounded-lg text-sm px-5 py-3 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 self-baseline"
-              >
-                Publish
-              </button>
+                text="Publish"
+              />
             </div>
           </div>
         </div>

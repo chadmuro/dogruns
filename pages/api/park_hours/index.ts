@@ -12,7 +12,6 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         monday, tuesday, wednesday, thursday, friday, saturday, sunday, extra, parkId
       },
     });
-    console.log(result);
     res.json(result);
   } else {
     res.status(401)

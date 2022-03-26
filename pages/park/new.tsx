@@ -5,7 +5,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Layout from "../../components/Layout";
-import StyledButton from "../../components/shared/StyledButton";
+import Button from "../../components/shared/Button";
 import Input from "../../components/shared/Input";
 import { ParkType } from "@prisma/client";
 
@@ -175,7 +175,7 @@ const NewPark = () => {
             register={register}
             error={errors.price}
           />
-          <StyledButton type="submit" text="Submit" loading={posting} />
+          <Button type="submit" text="Submit" loading={posting} />
         </form>
       </main>
     </Layout>

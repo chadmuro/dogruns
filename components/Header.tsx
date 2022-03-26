@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import StyledButton from "./shared/StyledButton";
+import Button from "./shared/Button";
 import { signOut, useSession } from "next-auth/react";
 
 interface HeaderProps {
@@ -24,13 +24,13 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
     authButton = (
       <Link href="/auth/signin">
         <a>
-          <StyledButton type="button" text="Login" />
+          <Button type="button" text="Login" />
         </a>
       </Link>
     );
   } else if (session) {
     authButton = (
-      <StyledButton type="button" text="Sign Out" onClick={() => signOut()} />
+      <Button type="button" text="Sign Out" onClick={() => signOut()} />
     );
   }
 

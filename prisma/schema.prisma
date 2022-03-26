@@ -54,7 +54,7 @@ model ParkHours {
   saturday  String
   sunday    String
   extra     String
-  park      Park   @relation(fields: [parkId], references: [id])
+  park      Park   @relation(fields: [parkId], references: [id], onDelete: Cascade)
   parkId    String @unique
 }
 
