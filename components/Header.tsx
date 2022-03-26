@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
 import Button from "./shared/Button";
-import useComponentVisible from "./hooks/useComponentVisible";
+import useComponentVisible from "../hooks/useComponentVisible";
 
 interface HeaderProps {
   darkMode: boolean;
@@ -65,12 +65,11 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
               </div>
               <ul className="py-1" aria-labelledby="dropdown">
                 <li>
-                  <a
-                    href="#"
-                    className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                  >
-                    Profile
-                  </a>
+                  <Link href="/profile">
+                    <a className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                      Profile
+                    </a>
+                  </Link>
                 </li>
                 <li>
                   <a

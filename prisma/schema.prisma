@@ -97,6 +97,17 @@ model User {
   reviews       Review[]
   accounts      Account[]
   sessions      Session[]
+  dogs          Dog[]
+}
+
+model Dog {
+  id        String  @id @default(cuid())
+  name      String
+  breed     String?
+  birthdate String?
+  image     String?
+  User      User?   @relation(fields: [userId], references: [id])
+  userId    String?
 }
 
 enum Role {
