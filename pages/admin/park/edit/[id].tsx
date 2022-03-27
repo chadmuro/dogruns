@@ -3,16 +3,31 @@ import { useSession } from "next-auth/react";
 import Router from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ParkType } from "@prisma/client";
-import Layout from "../../components/Layout";
+import { Park, ParkType } from "@prisma/client";
+import Layout from "../../../../components/Layout";
 import ParkForm, {
   ParkFormInputs,
   parkSchema,
-} from "../../components/forms/ParkForm";
+} from "../../../../components/forms/ParkForm";
+import { GetServerSideProps } from "next";
+import prisma from "../../../../lib/prisma";
 
-const NewPark = () => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  const park = await prisma.park.findUnique({
+    where: { id: params?.id as string },
+  });
+  return { props: { park } };
+};
+
+type Props = {
+  park: Park;
+};
+
+const EditPark = ({ park }: Props) => {
   const [posting, setPosting] = useState(false);
-  const { status } = useSession();
+  const { data: session, status } = useSession();
+  const isAdmin = session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+
   const {
     register,
     handleSubmit,
@@ -20,22 +35,22 @@ const NewPark = () => {
   } = useForm<ParkFormInputs>({
     resolver: yupResolver(parkSchema),
     defaultValues: {
-      name: "",
-      nameJapanese: "",
-      address: "",
-      addressJapanese: "",
-      google: "",
+      name: park.name,
+      nameJapanese: park.nameJapanese,
+      address: park.address,
+      addressJapanese: park.addressJapanese,
+      google: park.googleMapLink,
       // image: "",
-      type: ParkType.INDOOR,
-      price: "",
+      type: park.type as ParkType,
+      price: park.price,
     },
   });
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      Router.push("/auth/signin");
+    if (status !== "loading" && !isAdmin) {
+      Router.push("/");
     }
-  }, [status]);
+  }, [isAdmin]);
 
   const onSubmit: SubmitHandler<ParkFormInputs> = async (data) => {
     setPosting(true);
@@ -58,8 +73,8 @@ const NewPark = () => {
         type,
         price,
       };
-      const response = await fetch("/api/park", {
-        method: "POST",
+      const response = await fetch(`/api/park/edit/${park.id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
@@ -85,4 +100,4 @@ const NewPark = () => {
   );
 };
 
-export default NewPark;
+export default EditPark;

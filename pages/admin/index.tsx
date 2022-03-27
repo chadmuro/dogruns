@@ -2,10 +2,11 @@ import { useEffect } from "react";
 import { Park, ParkHours } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import Router, { useRouter } from "next/router";
+import Link from "next/link";
 import { getSession, useSession } from "next-auth/react";
-import Layout from "../components/Layout";
-import prisma from "../lib/prisma";
-import SecondaryButton from "../components/shared/SecondaryButton";
+import Layout from "../../components/Layout";
+import prisma from "../../lib/prisma";
+import SecondaryButton from "../../components/shared/SecondaryButton";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -47,8 +48,9 @@ async function publishPark(id: string): Promise<void> {
 }
 
 const Admin = ({ parks }: Props) => {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
+  const isAdmin = session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   const refreshData = () => {
     router.replace(router.asPath);
@@ -62,10 +64,10 @@ const Admin = ({ parks }: Props) => {
   }
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      Router.push("/auth/signin");
+    if (status !== "loading" && !isAdmin) {
+      Router.push("/");
     }
-  }, [status]);
+  }, [isAdmin]);
 
   return (
     <Layout>
@@ -97,6 +99,17 @@ const Admin = ({ parks }: Props) => {
                   variant="secondary"
                   onClick={() => deletePark(park.id)}
                 />
+              </div>
+              <div className="pr-4">
+                <Link href={`/admin/park/edit/${park.id}`}>
+                  <a>
+                    <SecondaryButton
+                      type="button"
+                      text="Edit"
+                      variant="secondary"
+                    />
+                  </a>
+                </Link>
               </div>
               <SecondaryButton
                 type="button"

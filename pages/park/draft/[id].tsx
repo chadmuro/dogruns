@@ -94,10 +94,10 @@ const DraftPark = ({ park }: Props) => {
       });
       const data = await response.json();
       await Router.push(`/park/${data.parkId}`);
-      setPosting(false);
     } catch (err) {
       console.log(err);
     }
+    setPosting(false);
   };
 
   return (

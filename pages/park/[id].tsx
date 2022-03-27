@@ -1,5 +1,6 @@
 import { GetServerSideProps } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { Park, ParkHours } from "@prisma/client";
 import prisma from "../../lib/prisma";
 import Layout from "../../components/Layout";
@@ -26,7 +27,13 @@ const ParkDetails = ({ park }: Props) => {
       <Layout>
         <main>
           <h1 className="text-4xl mb-4">{park.name}</h1>
-          <p>Park details are under review...</p>
+          <p>Thank you for your submission!</p>
+          <p>Park details are currently under review...</p>
+          <Link href="/">
+            <a>
+              <Button type="button" text="Back to Home" />
+            </a>
+          </Link>
         </main>
       </Layout>
     );
