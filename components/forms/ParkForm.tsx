@@ -1,4 +1,5 @@
 import { ParkType } from "@prisma/client";
+import { FieldError, UseFormRegister } from "react-hook-form";
 import * as yup from "yup";
 import Button from "../shared/Button";
 import Input from "../shared/Input";
@@ -27,8 +28,16 @@ export const parkSchema = yup
   .required();
 
 interface ParkFormProps {
-  register: any;
-  errors: any;
+  register: UseFormRegister<ParkFormInputs>;
+  errors: {
+    name?: FieldError | undefined;
+    nameJapanese?: FieldError | undefined;
+    address?: FieldError | undefined;
+    addressJapanese?: FieldError | undefined;
+    google?: FieldError | undefined;
+    type?: FieldError | undefined;
+    price?: FieldError | undefined;
+  };
   onSubmit: () => void;
   posting: boolean;
 }

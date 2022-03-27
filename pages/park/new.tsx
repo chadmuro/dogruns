@@ -64,7 +64,7 @@ const NewPark = () => {
         body: JSON.stringify(body),
       });
       const data = await response.json();
-      await Router.push(`/park/draft/${data.id}`);
+      await Router.push(`/park/hours/${data.id}`);
     } catch (err) {
       console.error(err);
     }
