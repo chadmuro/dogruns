@@ -64,7 +64,6 @@ const ParkHours = ({ park }: Props) => {
   }, [status]);
 
   const onSubmit: SubmitHandler<ParkHoursFormInputs> = async (data) => {
-    console.log("called once");
     setPosting(true);
     const {
       monday,
@@ -96,7 +95,7 @@ const ParkHours = ({ park }: Props) => {
       const data = await response.json();
       await Router.push(`/park/${data.parkId}`);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
     setPosting(false);
   };

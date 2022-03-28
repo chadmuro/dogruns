@@ -1,18 +1,26 @@
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { Park, ParkHours, Review } from "@prisma/client";
-import ReviewForm, { ReviewFormInputs } from "../forms/Review";
+import ReviewForm, { ReviewFormInputs } from "../../forms/Review";
+import ReviewCard from "./Card";
 
 interface ReviewsProps {
   park: Park & {
     parkHours: ParkHours;
-    reviews: Review[];
+    reviews: (Review & {
+      user: {
+        name: string;
+        image: string;
+      };
+    })[];
   };
 }
 
 const Reviews = ({ park }: ReviewsProps) => {
   const router = useRouter();
+  const { data: session } = useSession();
   const [rating, setRating] = useState(5);
   const [posting, setPosting] = useState(false);
   const { register, handleSubmit } = useForm<ReviewFormInputs>({
@@ -51,18 +59,23 @@ const Reviews = ({ park }: ReviewsProps) => {
     setPosting(false);
   };
 
-  console.log(park.reviews);
-
   return (
     <section>
       <h2 className="text-xl mb-4">Reviews</h2>
-      <ReviewForm
-        rating={rating}
-        handleValueChange={handleValueChange}
-        register={register}
-        onSubmit={handleSubmit(onSubmit)}
-        posting={posting}
-      />
+      {!!session ? (
+        <ReviewForm
+          rating={rating}
+          handleValueChange={handleValueChange}
+          register={register}
+          onSubmit={handleSubmit(onSubmit)}
+          posting={posting}
+        />
+      ) : (
+        <p className="mb-8">Sign in to leave a review</p>
+      )}
+      {park.reviews.map((review) => (
+        <ReviewCard key={review.id} review={review} />
+      ))}
     </section>
   );
 };

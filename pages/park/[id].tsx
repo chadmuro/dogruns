@@ -29,11 +29,22 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 };
 
 type Props = {
-  park: Park & { parkHours: ParkHours; reviews: Review[] };
+  park: Park & {
+    parkHours: ParkHours;
+    reviews: (Review & {
+      user: {
+        name: string;
+        image: string;
+      };
+    })[];
+  };
 };
 
 const ParkDetails = ({ park }: Props) => {
-  console.log(park);
+  const allReviews = park.reviews.map((review) => review.rating);
+  const ratingSum = allReviews.reduce((a, b) => a + b, 0);
+  const ratingAverage = ratingSum / allReviews.length || 0;
+
   if (!park.published) {
     return (
       <Layout>
@@ -151,7 +162,18 @@ const ParkDetails = ({ park }: Props) => {
                 </a>
               </div>
               <div>
-                <Rating />
+                <div className="flex">
+                  {park.reviews.length ? (
+                    <>
+                      <Rating rating={ratingAverage} />
+                      <p className="ml-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+                        {`${ratingAverage.toFixed(2)} ouf of 5`}
+                      </p>
+                    </>
+                  ) : (
+                    <p>No reviews yet</p>
+                  )}
+                </div>
                 <p>{`Type: ${park.type}`}</p>
                 <p>{`Price: ${park.price || "Free"}`}</p>
                 <p>{`Additional Information: ${
