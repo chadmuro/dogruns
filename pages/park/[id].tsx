@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Park, ParkHours } from "@prisma/client";
+import { Park, ParkHours, Review } from "@prisma/client";
 import prisma from "../../lib/prisma";
 import Layout from "../../components/Layout";
 import Reviews from "../../components/park/Reviews";
@@ -11,13 +11,25 @@ import Button from "../../components/shared/Button";
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const park = await prisma.park.findUnique({
     where: { id: params?.id as string },
-    include: { parkHours: true, reviews: true },
+    include: {
+      parkHours: true,
+      reviews: {
+        include: {
+          user: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+        },
+      },
+    },
   });
   return { props: { park } };
 };
 
 type Props = {
-  park: Park & { parkHours: ParkHours };
+  park: Park & { parkHours: ParkHours; reviews: Review[] };
 };
 
 const ParkDetails = ({ park }: Props) => {
@@ -180,7 +192,7 @@ const ParkDetails = ({ park }: Props) => {
           </div>
         </section>
         <div className="h-1 border-b-2 border-gray-500 mx-4 mb-8" />
-        <Reviews />
+        <Reviews park={park} />
       </main>
     </Layout>
   );
