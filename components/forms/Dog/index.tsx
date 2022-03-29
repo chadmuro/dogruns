@@ -1,4 +1,5 @@
 import { FieldError, UseFormRegister } from "react-hook-form";
+import * as yup from "yup";
 import Button from "../../shared/Button";
 import Input from "../../shared/Input";
 
@@ -9,6 +10,15 @@ export type NewDogInputs = {
   birthdate: string;
 };
 
+export const dogSchema = yup
+  .object({
+    name: yup.string().required("Dog name is required"),
+    image: yup.string().required("Dog image is required"),
+    breed: yup.string().required("Dog breed is required"),
+    birthdate: yup.string().required("Dog birthdate is required"),
+  })
+  .required();
+
 interface DogFormProps {
   register: UseFormRegister<NewDogInputs>;
   errors: {
@@ -17,12 +27,13 @@ interface DogFormProps {
     breed?: FieldError | undefined;
     birthdate?: FieldError | undefined;
   };
+  onSubmit: () => void;
   hideForm?: () => void;
 }
 
-const DogForm = ({ register, errors, hideForm }: DogFormProps) => {
+const DogForm = ({ register, errors, onSubmit, hideForm }: DogFormProps) => {
   return (
-    <form>
+    <form onSubmit={onSubmit}>
       <Input
         autoFocus
         label="Dog name"

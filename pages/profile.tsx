@@ -1,7 +1,8 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Dog } from "@prisma/client";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import DogForm, { NewDogInputs } from "../components/forms/Dog";
+import { SubmitHandler, useForm } from "react-hook-form";
+import DogForm, { dogSchema, NewDogInputs } from "../components/forms/Dog";
 import Layout from "../components/Layout";
 import DogCard from "../components/profile/DogCard";
 import Button from "../components/shared/Button";
@@ -12,8 +13,10 @@ const Profile = () => {
 
   const {
     register,
+    handleSubmit,
     formState: { errors },
   } = useForm<NewDogInputs>({
+    resolver: yupResolver(dogSchema),
     defaultValues: {
       name: "",
       image: "",
@@ -24,6 +27,11 @@ const Profile = () => {
 
   const hideForm = () => {
     setShowForm(false);
+    setSelectedDog(null);
+  };
+
+  const onSubmit: SubmitHandler<NewDogInputs> = (data) => {
+    console.log(data);
   };
 
   return (
@@ -40,9 +48,14 @@ const Profile = () => {
             <li>test@test.com</li>
           </ul>
         </div>
-        <DogCard />
-        {showForm ? (
-          <DogForm register={register} errors={errors} hideForm={hideForm} />
+        <DogCard selectedDog={selectedDog} setSelectedDog={setSelectedDog} />
+        {showForm || !!selectedDog ? (
+          <DogForm
+            register={register}
+            errors={errors}
+            hideForm={hideForm}
+            onSubmit={handleSubmit(onSubmit)}
+          />
         ) : (
           <Button
             type="button"
