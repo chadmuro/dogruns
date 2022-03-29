@@ -1,6 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Dog } from "@prisma/client";
 import { useState } from "react";
+import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import DogForm, { dogSchema, NewDogInputs } from "../components/forms/Dog";
 import Layout from "../components/Layout";
@@ -10,6 +11,12 @@ import Button from "../components/shared/Button";
 const Profile = () => {
   const [showForm, setShowForm] = useState(false);
   const [selectedDog, setSelectedDog] = useState<Dog | null>(null);
+  const [posting, setPosting] = useState(false);
+  const router = useRouter();
+
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
 
   const {
     register,
@@ -19,7 +26,7 @@ const Profile = () => {
     resolver: yupResolver(dogSchema),
     defaultValues: {
       name: "",
-      image: "",
+      image: null,
       breed: "",
       birthdate: "",
     },
@@ -30,8 +37,39 @@ const Profile = () => {
     setSelectedDog(null);
   };
 
-  const onSubmit: SubmitHandler<NewDogInputs> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<NewDogInputs> = async (data) => {
+    setPosting(true);
+    const { name, image, breed, birthdate } = data;
+    try {
+      const formData = new FormData();
+      formData.append("file", (image as FileList)[0]);
+      formData.append("upload_preset", "dogruns_dogs");
+
+      const cloudinaryData = await fetch(
+        "https://api.cloudinary.com/v1_1/chadmuro/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const response = await cloudinaryData.json();
+      console.log(response.secure_url);
+      const body = {
+        name,
+        image: response.secure_url,
+        breed,
+        birthdate,
+      };
+      await fetch("/api/dog", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      refreshData();
+    } catch (err) {
+      console.error(err);
+    }
+    setPosting(false);
   };
 
   return (
@@ -40,12 +78,14 @@ const Profile = () => {
         <h1 className="text-xl">Profile</h1>
         <div className="flex leading-8 mb-2">
           <ul>
-            <li>Name</li>
-            <li>Email</li>
+            <li>Name:</li>
+            <li>Email:</li>
+            <li>Favorite Parks:</li>
           </ul>
           <ul className="pl-4 flex-1">
             <li>Chad Muro</li>
             <li>test@test.com</li>
+            <li>Park 1, Park 2</li>
           </ul>
         </div>
         <DogCard selectedDog={selectedDog} setSelectedDog={setSelectedDog} />
@@ -53,6 +93,7 @@ const Profile = () => {
           <DogForm
             register={register}
             errors={errors}
+            posting={posting}
             hideForm={hideForm}
             onSubmit={handleSubmit(onSubmit)}
           />

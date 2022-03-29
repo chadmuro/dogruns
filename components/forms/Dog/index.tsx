@@ -5,7 +5,7 @@ import Input from "../../shared/Input";
 
 export type NewDogInputs = {
   name: string;
-  image: string;
+  image: FileList | null;
   breed: string;
   birthdate: string;
 };
@@ -13,7 +13,7 @@ export type NewDogInputs = {
 export const dogSchema = yup
   .object({
     name: yup.string().required("Dog name is required"),
-    image: yup.string().required("Dog image is required"),
+    // image: yup.string().required("Dog image is required"),
     breed: yup.string().required("Dog breed is required"),
     birthdate: yup.string().required("Dog birthdate is required"),
   })
@@ -27,11 +27,18 @@ interface DogFormProps {
     breed?: FieldError | undefined;
     birthdate?: FieldError | undefined;
   };
+  posting: boolean;
   onSubmit: () => void;
   hideForm?: () => void;
 }
 
-const DogForm = ({ register, errors, onSubmit, hideForm }: DogFormProps) => {
+const DogForm = ({
+  register,
+  errors,
+  posting,
+  onSubmit,
+  hideForm,
+}: DogFormProps) => {
   return (
     <form onSubmit={onSubmit}>
       <Input
@@ -79,7 +86,7 @@ const DogForm = ({ register, errors, onSubmit, hideForm }: DogFormProps) => {
             />
           </div>
         )}
-        <Button type="submit" text="Add dog" />
+        <Button type="submit" text="Add dog" loading={posting} />
       </div>
     </form>
   );
