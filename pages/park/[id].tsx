@@ -9,7 +9,7 @@ import Rating from "../../components/park/Rating";
 import Button from "../../components/shared/Button";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const park = await prisma.park.findUnique({
+  const data = await prisma.park.findUnique({
     where: { id: params?.id as string },
     include: {
       parkHours: true,
@@ -25,6 +25,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       },
     },
   });
+  const park = JSON.parse(JSON.stringify(data));
   return { props: { park } };
 };
 
@@ -167,7 +168,7 @@ const ParkDetails = ({ park }: Props) => {
                     <>
                       <Rating rating={ratingAverage} />
                       <p className="ml-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-                        {`${ratingAverage.toFixed(2)} ouf of 5`}
+                        {`${Math.round(ratingAverage * 100) / 100} out of 5`}
                       </p>
                     </>
                   ) : (

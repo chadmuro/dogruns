@@ -11,6 +11,8 @@ interface ReviewCardProps {
 }
 
 const ReviewCard = ({ review }: ReviewCardProps) => {
+  const date = new Date(review.createdAt).toLocaleDateString("ja-JP");
+
   return (
     <article className="bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 p-4 mb-4">
       <div className="flex items-center mb-4 space-x-4">
@@ -26,7 +28,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
               dateTime="2014-08-16 19:00"
               className="block text-sm text-gray-500 dark:text-gray-400"
             >
-              {review.createdAt}
+              {date}
             </time>
           </p>
         </div>
