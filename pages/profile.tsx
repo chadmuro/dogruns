@@ -7,7 +7,7 @@ import DogForm, { dogSchema, NewDogInputs } from "../components/forms/Dog";
 import Layout from "../components/Layout";
 import DogCard from "../components/profile/DogCard";
 import Button from "../components/shared/Button";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import prisma from "../lib/prisma";
 import { GetServerSideProps } from "next";
 
@@ -35,22 +35,25 @@ const Profile = ({ dogs }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedDog, setSelectedDog] = useState<Dog | null>(null);
   const [posting, setPosting] = useState(false);
+  const { data: session } = useSession();
   const router = useRouter();
 
   const refreshData = () => {
     router.replace(router.asPath);
+    hideForm();
   };
 
   const {
     register,
     handleSubmit,
+    setValue,
     reset,
     formState: { errors },
   } = useForm<NewDogInputs>({
     resolver: yupResolver(dogSchema),
     defaultValues: {
       name: "",
-      image: null,
+      image: [],
       breed: "",
       birthdate: "",
     },
@@ -66,7 +69,7 @@ const Profile = ({ dogs }: Props) => {
     const { name, image, breed, birthdate } = data;
     try {
       const formData = new FormData();
-      formData.append("file", (image as FileList)[0]);
+      formData.append("file", (image as any)[0]);
       formData.append("upload_preset", "dogruns_dogs");
 
       const cloudinaryData = await fetch(
@@ -77,7 +80,6 @@ const Profile = ({ dogs }: Props) => {
         }
       );
       const response = await cloudinaryData.json();
-      console.log(response.secure_url);
       const body = {
         name,
         image: response.secure_url,
@@ -96,11 +98,59 @@ const Profile = ({ dogs }: Props) => {
     setPosting(false);
   };
 
+  const onEditSubmit: SubmitHandler<NewDogInputs> = async (data) => {
+    setPosting(true);
+    const { name, image, breed, birthdate } = data;
+    console.log(image);
+    try {
+      if (!!image.length) {
+        const formData = new FormData();
+        formData.append("file", (image as any)[0]);
+        formData.append("upload_preset", "dogruns_dogs");
+
+        const cloudinaryData = await fetch(
+          "https://api.cloudinary.com/v1_1/chadmuro/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        const response = await cloudinaryData.json();
+        const body = {
+          name,
+          image: response.secure_url,
+          breed,
+          birthdate,
+        };
+        await fetch(`/api/dog/edit/${selectedDog?.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+      } else {
+        const body = {
+          name,
+          image: selectedDog?.image,
+          breed,
+          birthdate,
+        };
+        await fetch(`/api/dog/edit/${selectedDog?.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+      }
+      refreshData();
+    } catch (err) {
+      console.error(err);
+    }
+    setPosting(false);
+  };
+
   useEffect(() => {
     if (selectedDog) {
       reset({
         name: selectedDog.name,
-        image: null,
         breed: selectedDog.breed as string,
         birthdate: selectedDog.birthdate as string,
       });
@@ -118,8 +168,8 @@ const Profile = ({ dogs }: Props) => {
             <li>Favorite Parks:</li>
           </ul>
           <ul className="pl-4 flex-1">
-            <li>Chad Muro</li>
-            <li>test@test.com</li>
+            <li>{session?.user?.name}</li>
+            <li>{session?.user?.email}</li>
             <li>Park 1, Park 2</li>
           </ul>
         </div>
@@ -137,7 +187,11 @@ const Profile = ({ dogs }: Props) => {
             errors={errors}
             posting={posting}
             hideForm={hideForm}
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={
+              !!selectedDog
+                ? handleSubmit(onEditSubmit)
+                : handleSubmit(onSubmit)
+            }
           />
         ) : (
           <Button
