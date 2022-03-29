@@ -5,7 +5,7 @@ import Input from "../../shared/Input";
 
 export type NewDogInputs = {
   name: string;
-  image: File[];
+  image: any;
   breed: string;
   birthdate: string;
 };

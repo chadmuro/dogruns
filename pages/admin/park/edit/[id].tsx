@@ -40,7 +40,7 @@ const EditPark = ({ park }: Props) => {
       address: park.address,
       addressJapanese: park.addressJapanese,
       google: park.googleMapLink,
-      // image: "",
+      // image: park.mainImage,
       type: park.type as ParkType,
       price: park.price,
     },
@@ -70,6 +70,7 @@ const EditPark = ({ park }: Props) => {
         address,
         addressJapanese,
         google,
+        image: park.mainImage,
         type,
         price,
       };

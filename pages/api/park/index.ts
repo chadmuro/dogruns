@@ -3,7 +3,7 @@ import { getSession } from 'next-auth/react';
 import prisma from '../../../lib/prisma';
 
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
-  const { name, nameJapanese, address, addressJapanese, google, price, type } = req.body;
+  const { name, nameJapanese, address, addressJapanese, google, image, price, type } = req.body;
 
   const session = await getSession({ req });
   if (session) {
@@ -14,7 +14,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         address,
         addressJapanese,
         googleMapLink: google,
-        mainImage: "",
+        mainImage: image,
         price,
         type,
         user: { connect: { email: session?.user?.email as string | undefined }},

@@ -25,7 +25,7 @@ const NewPark = () => {
       address: "",
       addressJapanese: "",
       google: "",
-      // image: "",
+      image: [],
       type: ParkType.INDOOR,
       price: "",
     },
@@ -45,16 +45,34 @@ const NewPark = () => {
       address,
       addressJapanese,
       google,
+      image,
       price,
       type,
     } = data;
     try {
+      let imageUrl: string | undefined;
+      if (!!image.length) {
+        const formData = new FormData();
+        formData.append("file", (image as any)[0]);
+        formData.append("upload_preset", "dogruns_parks");
+
+        const cloudinaryData = await fetch(
+          "https://api.cloudinary.com/v1_1/chadmuro/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        const response = await cloudinaryData.json();
+        imageUrl = response.secure_url;
+      }
       const body = {
         name,
         nameJapanese,
         address,
         addressJapanese,
         google,
+        image: imageUrl,
         type,
         price,
       };

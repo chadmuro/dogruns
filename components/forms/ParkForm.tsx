@@ -10,7 +10,7 @@ export type ParkFormInputs = {
   address: string;
   addressJapanese: string;
   google: string;
-  // image: string;
+  image: any;
   type: ParkType;
   price: string;
 };
@@ -35,6 +35,7 @@ interface ParkFormProps {
     address?: FieldError | undefined;
     addressJapanese?: FieldError | undefined;
     google?: FieldError | undefined;
+    image?: any;
     type?: FieldError | undefined;
     price?: FieldError | undefined;
   };
@@ -47,7 +48,7 @@ const ParkForm = ({ register, errors, onSubmit, posting }: ParkFormProps) => {
     <form className="max-w-sm mx-auto mb-8" onSubmit={onSubmit}>
       <div className="flex justify-between">
         <Input
-          label="Park name"
+          label="Park name (English)"
           type="text"
           name="name"
           placeholder="Park name"
@@ -66,7 +67,7 @@ const ParkForm = ({ register, errors, onSubmit, posting }: ParkFormProps) => {
       </div>
       <div className="flex justify-between">
         <Input
-          label="Park address"
+          label="Park address (English)"
           type="text"
           name="address"
           placeholder="Park address"
@@ -90,16 +91,15 @@ const ParkForm = ({ register, errors, onSubmit, posting }: ParkFormProps) => {
         register={register}
         error={errors.google}
       />
-      {/* <Input
-          label="Main image"
-          type="file"
-          accept="image/*"
-          name="image"
-          placeholder="Select a main image"
-          
-          register={register}
-          error={errors.image}
-        /> */}
+      <Input
+        label="Main image"
+        type="file"
+        accept="image/*"
+        name="image"
+        placeholder="Select a main image"
+        register={register}
+        error={errors.image}
+      />
       <label
         htmlFor="countries"
         className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"

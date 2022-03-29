@@ -3,7 +3,7 @@ import prisma from "../../../../lib/prisma";
 
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
   const parkId = req.query.id;
-  const { name, nameJapanese, address, addressJapanese, google, price, type } = req.body;
+  const { name, nameJapanese, address, addressJapanese, google, image, price, type } = req.body;
 
   const park = await prisma.park.update({
     where: { id: parkId as string },
@@ -13,7 +13,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         address,
         addressJapanese,
         googleMapLink: google,
-        mainImage: "",
+        mainImage: image,
         price,
         type,
       },
