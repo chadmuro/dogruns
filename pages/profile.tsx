@@ -1,14 +1,37 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Dog } from "@prisma/client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import DogForm, { dogSchema, NewDogInputs } from "../components/forms/Dog";
 import Layout from "../components/Layout";
 import DogCard from "../components/profile/DogCard";
 import Button from "../components/shared/Button";
+import { getSession } from "next-auth/react";
+import prisma from "../lib/prisma";
+import { GetServerSideProps } from "next";
 
-const Profile = () => {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
+  params,
+}) => {
+  const session = await getSession({ req });
+  const dogs = await prisma.dog.findMany({
+    where: {
+      user: { email: session?.user?.email as string | undefined },
+    },
+  });
+  return {
+    props: { dogs },
+  };
+};
+
+type Props = {
+  dogs: Dog[];
+};
+
+const Profile = ({ dogs }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedDog, setSelectedDog] = useState<Dog | null>(null);
   const [posting, setPosting] = useState(false);
@@ -21,6 +44,7 @@ const Profile = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<NewDogInputs>({
     resolver: yupResolver(dogSchema),
@@ -72,6 +96,17 @@ const Profile = () => {
     setPosting(false);
   };
 
+  useEffect(() => {
+    if (selectedDog) {
+      reset({
+        name: selectedDog.name,
+        image: null,
+        breed: selectedDog.breed as string,
+        birthdate: selectedDog.birthdate as string,
+      });
+    }
+  }, [selectedDog]);
+
   return (
     <Layout>
       <div className="max-w-md">
@@ -88,7 +123,14 @@ const Profile = () => {
             <li>Park 1, Park 2</li>
           </ul>
         </div>
-        <DogCard selectedDog={selectedDog} setSelectedDog={setSelectedDog} />
+        {dogs.map((dog) => (
+          <DogCard
+            key={dog.id}
+            dog={dog}
+            selectedDog={selectedDog}
+            setSelectedDog={setSelectedDog}
+          />
+        ))}
         {showForm || !!selectedDog ? (
           <DogForm
             register={register}
