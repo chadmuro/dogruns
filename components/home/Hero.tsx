@@ -16,7 +16,11 @@ const Hero = () => {
         Let your dogs run free and make new friends!
       </h3>
       <div className="flex items-baseline">
-        <Button type="button" text="See parks" size="lg" />
+        <Link href="#most-popular">
+          <a>
+            <Button type="button" text="See parks" size="lg" />
+          </a>
+        </Link>
         {!!session && (
           <Link href="/park/new">
             <a className="ml-4">

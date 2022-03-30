@@ -22,8 +22,8 @@ const Home = ({ parks }: Props) => {
     <Layout>
       <main>
         <Hero />
-        <section className="my-20">
-          <h2 className="text-xl">Top Rated</h2>
+        <section className="my-20" id="most-popular">
+          <h2 className="text-xl">Most Popular Parks</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 justify-center items-stretch mb-8">
             {parks.map((park) => (
               <ParkCard key={park.id} park={park} />

@@ -50,6 +50,7 @@ const Layout: React.FC<Props> = (props) => {
       <style jsx global>{`
         html {
           box-sizing: border-box;
+          scroll-behavior: smooth;
         }
 
         *,
