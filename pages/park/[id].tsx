@@ -1,14 +1,21 @@
 import { GetServerSideProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Park, ParkHours, Review } from "@prisma/client";
+import { useRouter } from "next/router";
+import { Park, ParkHours, Review, User } from "@prisma/client";
 import prisma from "../../lib/prisma";
 import Layout from "../../components/Layout";
 import Reviews from "../../components/park/Reviews";
 import Rating from "../../components/park/Rating";
 import Button from "../../components/shared/Button";
+import { getSession, useSession } from "next-auth/react";
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
+  params,
+}) => {
+  const session = await getSession({ req });
   const data = await prisma.park.findUnique({
     where: { id: params?.id as string },
     include: {
@@ -23,6 +30,14 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
           },
         },
       },
+      favoriteUsers: session
+        ? {
+            where: {
+              parkId: params?.id as string,
+              user: { email: session?.user?.email as string | undefined },
+            },
+          }
+        : false,
     },
   });
   const park = JSON.parse(JSON.stringify(data));
@@ -38,6 +53,7 @@ type Props = {
         image: string;
       };
     })[];
+    favoriteUsers: User[];
   };
 };
 
@@ -45,6 +61,43 @@ const ParkDetails = ({ park }: Props) => {
   const allReviews = park.reviews.map((review) => review.rating);
   const ratingSum = allReviews.reduce((a, b) => a + b, 0);
   const ratingAverage = ratingSum / allReviews.length || 0;
+  const { data: session } = useSession();
+  const router = useRouter();
+  const isFavorited = session && park.favoriteUsers.length;
+
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
+
+  const handleFavoriteClick = async (favoriteId?: string) => {
+    if (!session) {
+      return router.push("/auth/signin");
+    }
+    if (!isFavorited) {
+      try {
+        await fetch(`/api/park/favorite/add/${park.id}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+        refreshData();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    if (isFavorited) {
+      try {
+        await fetch(`/api/park/favorite/remove/${favoriteId}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        });
+        refreshData();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
+  console.log(park.favoriteUsers);
 
   if (!park.published) {
     return (
@@ -84,20 +137,29 @@ const ParkDetails = ({ park }: Props) => {
           <div className="flex justify-between align-top">
             <h1 className="text-4xl mb-4">{park.name}</h1>
             <Button
+              onClick={() =>
+                handleFavoriteClick(
+                  park.favoriteUsers.length
+                    ? park.favoriteUsers[0].id
+                    : undefined
+                )
+              }
               type="button"
               text={
                 <>
                   <svg
-                    className="sm:mr-2 sm:-ml-1"
-                    fill="#fff"
-                    width="24"
-                    height="24"
+                    className={`w-7 h-7 sm:mr-1 ${
+                      isFavorited ? "text-yellow-400" : "text-white"
+                    }`}
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 576 512"
                   >
-                    <path d="M287.9 0C297.1 0 305.5 5.25 309.5 13.52L378.1 154.8L531.4 177.5C540.4 178.8 547.8 185.1 550.7 193.7C553.5 202.4 551.2 211.9 544.8 218.2L433.6 328.4L459.9 483.9C461.4 492.9 457.7 502.1 450.2 507.4C442.8 512.7 432.1 513.4 424.9 509.1L287.9 435.9L150.1 509.1C142.9 513.4 133.1 512.7 125.6 507.4C118.2 502.1 114.5 492.9 115.1 483.9L142.2 328.4L31.11 218.2C24.65 211.9 22.36 202.4 25.2 193.7C28.03 185.1 35.5 178.8 44.49 177.5L197.7 154.8L266.3 13.52C270.4 5.249 278.7 0 287.9 0L287.9 0zM287.9 78.95L235.4 187.2C231.9 194.3 225.1 199.3 217.3 200.5L98.98 217.9L184.9 303C190.4 308.5 192.9 316.4 191.6 324.1L171.4 443.7L276.6 387.5C283.7 383.7 292.2 383.7 299.2 387.5L404.4 443.7L384.2 324.1C382.9 316.4 385.5 308.5 391 303L476.9 217.9L358.6 200.5C350.7 199.3 343.9 194.3 340.5 187.2L287.9 78.95z" />
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                   </svg>
-                  <p className="hidden sm:block">Add to favorites</p>
+                  <p className="hidden sm:block">
+                    {isFavorited ? "Favorite Park" : "Add to favorites"}
+                  </p>
                 </>
               }
             />

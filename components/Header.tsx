@@ -15,8 +15,12 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
     router.pathname === pathname;
   const { ref, isComponentVisible, setIsComponentVisible } =
     useComponentVisible(false);
-
   const { data: session, status } = useSession();
+
+  const handleSignOut = () => {
+    signOut();
+    router.push("/");
+  };
 
   let authButton;
   if (status === "loading") {
@@ -81,7 +85,7 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
                 </li>
                 <li>
                   <button
-                    onClick={() => signOut()}
+                    onClick={handleSignOut}
                     className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-left"
                   >
                     Sign out

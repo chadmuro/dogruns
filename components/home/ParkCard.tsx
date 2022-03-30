@@ -10,7 +10,7 @@ interface ParkCardProps {
 const ParkCard = ({ park }: ParkCardProps) => {
   return (
     <Link href={`/park/${park.id}`}>
-      <a className="max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 justify-self-center">
+      <a className="max-w-sm w-full bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 justify-self-center">
         <div className="relative w-full h-48">
           <Image
             className="rounded-t-lg"

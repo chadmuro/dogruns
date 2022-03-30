@@ -26,6 +26,7 @@ model Park {
   userId                String?
   reviews               Review[]
   parkHours             ParkHours?
+  favoriteUsers         Favorite[]
 }
 
 enum ParkType {
@@ -87,18 +88,27 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  role          Role      @default(USER)
-  email         String?   @unique
+  role          Role       @default(USER)
+  email         String?    @unique
   emailVerified DateTime?
   image         String?
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  createdAt     DateTime   @default(now()) @map(name: "created_at")
   parks         Park[]
   reviews       Review[]
   accounts      Account[]
   sessions      Session[]
   dogs          Dog[]
+  favoriteParks Favorite[]
+}
+
+model Favorite {
+  id     String  @id @default(cuid())
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
+  park   Park?   @relation(fields: [parkId], references: [id])
+  parkId String?
 }
 
 model Dog {

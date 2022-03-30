@@ -72,7 +72,7 @@ const NewPark = () => {
         address,
         addressJapanese,
         google,
-        image: imageUrl,
+        image: imageUrl || "",
         type,
         price,
       };

@@ -14,7 +14,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
   const date = new Date(review.createdAt).toLocaleDateString("ja-JP");
 
   return (
-    <article className="bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 p-4 mb-4">
+    <article className="bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 p-4 mb-4 w-full">
       <div className="flex items-center mb-4 space-x-4">
         <img
           className="w-10 h-10 rounded-full"
@@ -36,7 +36,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
       <div className="flex items-center mb-1">
         <Rating rating={review.rating} />
       </div>
-      <p className="mb-3 font-light text-gray-500 dark:text-gray-400 whitespace-pre">
+      <p className="mb-3 font-light text-gray-500 dark:text-gray-400 whitespace-pre-line break-words">
         {review.comment}
       </p>
     </article>
