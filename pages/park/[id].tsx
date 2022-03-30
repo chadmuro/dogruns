@@ -97,8 +97,6 @@ const ParkDetails = ({ park }: Props) => {
     }
   };
 
-  console.log(park.favoriteUsers);
-
   if (!park.published) {
     return (
       <Layout>
@@ -139,7 +137,7 @@ const ParkDetails = ({ park }: Props) => {
             <Button
               onClick={() =>
                 handleFavoriteClick(
-                  park.favoriteUsers.length
+                  park.favoriteUsers?.length
                     ? park.favoriteUsers[0].id
                     : undefined
                 )

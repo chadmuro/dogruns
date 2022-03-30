@@ -22,16 +22,29 @@ export const getServerSideProps: GetServerSideProps = async ({
       user: { email: session?.user?.email as string | undefined },
     },
   });
+  const favoriteParks = await prisma.favorite.findMany({
+    where: {
+      user: { email: session?.user?.email as string | undefined },
+    },
+    select: {
+      park: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
   return {
-    props: { dogs },
+    props: { dogs, favoriteParks },
   };
 };
 
 type Props = {
   dogs: Dog[];
+  favoriteParks: { park: { name: string } }[];
 };
 
-const Profile = ({ dogs }: Props) => {
+const Profile = ({ dogs, favoriteParks }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedDog, setSelectedDog] = useState<Dog | null>(null);
   const [posting, setPosting] = useState(false);
@@ -42,6 +55,10 @@ const Profile = ({ dogs }: Props) => {
     router.replace(router.asPath);
     hideForm();
   };
+
+  const favoriteParkNames = favoriteParks
+    .map((park) => park.park.name)
+    .join(", ");
 
   const {
     register,
@@ -101,7 +118,6 @@ const Profile = ({ dogs }: Props) => {
   const onEditSubmit: SubmitHandler<NewDogInputs> = async (data) => {
     setPosting(true);
     const { name, image, breed, birthdate } = data;
-    console.log(image);
     try {
       if (!!image.length) {
         const formData = new FormData();
@@ -170,7 +186,7 @@ const Profile = ({ dogs }: Props) => {
           <ul className="pl-4 flex-1">
             <li>{session?.user?.name}</li>
             <li>{session?.user?.email}</li>
-            <li>Park 1, Park 2</li>
+            <li>{favoriteParks.length ? favoriteParkNames : "None"}</li>
           </ul>
         </div>
         {dogs.map((dog) => (
