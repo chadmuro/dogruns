@@ -2,6 +2,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Dog } from "@prisma/client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import { SubmitHandler, useForm } from "react-hook-form";
 import DogForm, { dogSchema, NewDogInputs } from "../components/forms/Dog";
 import Layout from "../components/Layout";
@@ -10,6 +11,7 @@ import Button from "../components/shared/Button";
 import { getSession, useSession } from "next-auth/react";
 import prisma from "../lib/prisma";
 import { GetServerSideProps } from "next";
+import uploadImage from "../utils/uploadImage";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -50,6 +52,7 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
   const [posting, setPosting] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
 
   const refreshData = () => {
     router.replace(router.asPath);
@@ -85,32 +88,30 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
     setPosting(true);
     const { name, image, breed, birthdate } = data;
     try {
-      const formData = new FormData();
-      formData.append("file", (image as any)[0]);
-      formData.append("upload_preset", "dogruns_dogs");
-
-      const cloudinaryData = await fetch(
-        "https://api.cloudinary.com/v1_1/chadmuro/image/upload",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-      const response = await cloudinaryData.json();
+      let imageUrl;
+      if (!!image.length) {
+        imageUrl = await uploadImage(image, "dogruns_dogs");
+      }
       const body = {
         name,
-        image: response.secure_url,
+        image: imageUrl,
         breed,
         birthdate,
       };
-      await fetch("/api/dog", {
+      const response = await fetch("/api/dog", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
+      await response.json();
+      enqueueSnackbar("New dog added", {
+        variant: "success",
+      });
       refreshData();
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      enqueueSnackbar(err.message, {
+        variant: "error",
+      });
     }
     setPosting(false);
   };
@@ -119,46 +120,30 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
     setPosting(true);
     const { name, image, breed, birthdate } = data;
     try {
+      let imageUrl;
       if (!!image.length) {
-        const formData = new FormData();
-        formData.append("file", (image as any)[0]);
-        formData.append("upload_preset", "dogruns_dogs");
-
-        const cloudinaryData = await fetch(
-          "https://api.cloudinary.com/v1_1/chadmuro/image/upload",
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
-        const response = await cloudinaryData.json();
-        const body = {
-          name,
-          image: response.secure_url,
-          breed,
-          birthdate,
-        };
-        await fetch(`/api/dog/edit/${selectedDog?.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
-      } else {
-        const body = {
-          name,
-          image: selectedDog?.image,
-          breed,
-          birthdate,
-        };
-        await fetch(`/api/dog/edit/${selectedDog?.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
+        imageUrl = await uploadImage(image, "dogruns_dogs");
       }
+      const body = {
+        name,
+        image: imageUrl ? imageUrl : selectedDog?.image,
+        breed,
+        birthdate,
+      };
+      const response = await fetch(`/api/dog/edit/${selectedDog?.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      await response.json();
+      enqueueSnackbar("Dog information saved", {
+        variant: "success",
+      });
       refreshData();
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      enqueueSnackbar(err.message, {
+        variant: "error",
+      });
     }
     setPosting(false);
   };
@@ -170,12 +155,18 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
         breed: selectedDog.breed as string,
         birthdate: selectedDog.birthdate as string,
       });
+    } else {
+      reset({
+        name: "",
+        breed: "",
+        birthdate: "",
+      });
     }
   }, [selectedDog]);
 
   return (
     <Layout>
-      <div className="max-w-md">
+      <div className="max-w-md mb-4">
         <h1 className="text-xl">Profile</h1>
         <div className="flex leading-8 mb-2">
           <ul>

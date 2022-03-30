@@ -4,6 +4,7 @@ import Router from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ParkType } from "@prisma/client";
+import { useSnackbar } from "notistack";
 import Layout from "../../components/Layout";
 import ParkForm, {
   ParkFormInputs,
@@ -11,6 +12,7 @@ import ParkForm, {
 } from "../../components/forms/ParkForm";
 
 const NewPark = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const [posting, setPosting] = useState(false);
   const { status } = useSession();
   const {
@@ -83,8 +85,13 @@ const NewPark = () => {
       });
       const data = await response.json();
       await Router.push(`/park/hours/${data.id}`);
-    } catch (err) {
-      console.error(err);
+      enqueueSnackbar("New park created", {
+        variant: "success",
+      });
+    } catch (err: any) {
+      enqueueSnackbar(err.message, {
+        variant: "error",
+      });
     }
     setPosting(false);
   };
