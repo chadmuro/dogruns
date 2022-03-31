@@ -4,15 +4,16 @@ import Router from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ParkType } from "@prisma/client";
-import { useSnackbar } from "notistack";
 import Layout from "../../components/Layout";
 import ParkForm, {
   ParkFormInputs,
   parkSchema,
 } from "../../components/forms/ParkForm";
+import uploadImage from "../../utils/uploadImage";
+import { toast } from "react-toastify";
+import Toast from "../../components/shared/Toast";
 
 const NewPark = () => {
-  const { enqueueSnackbar } = useSnackbar();
   const [posting, setPosting] = useState(false);
   const { status } = useSession();
   const {
@@ -54,19 +55,7 @@ const NewPark = () => {
     try {
       let imageUrl: string | undefined;
       if (!!image.length) {
-        const formData = new FormData();
-        formData.append("file", (image as any)[0]);
-        formData.append("upload_preset", "dogruns_parks");
-
-        const cloudinaryData = await fetch(
-          "https://api.cloudinary.com/v1_1/chadmuro/image/upload",
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
-        const response = await cloudinaryData.json();
-        imageUrl = response.secure_url;
+        imageUrl = await uploadImage(image, "dogruns_parks");
       }
       const body = {
         name,
@@ -85,13 +74,9 @@ const NewPark = () => {
       });
       const data = await response.json();
       await Router.push(`/park/hours/${data.id}`);
-      enqueueSnackbar("New park created", {
-        variant: "success",
-      });
+      toast(<Toast variant="success" message="New park created" />);
     } catch (err: any) {
-      enqueueSnackbar(err.message, {
-        variant: "error",
-      });
+      toast(<Toast variant="error" message={err.message} />);
     }
     setPosting(false);
   };

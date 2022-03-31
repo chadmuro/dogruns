@@ -1,4 +1,5 @@
 import { GetServerSideProps } from "next";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -9,6 +10,8 @@ import Reviews from "../../components/park/Reviews";
 import Rating from "../../components/park/Rating";
 import Button from "../../components/shared/Button";
 import { getSession, useSession } from "next-auth/react";
+import { toast } from "react-toastify";
+import Toast from "../../components/shared/Toast";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -58,6 +61,7 @@ type Props = {
 };
 
 const ParkDetails = ({ park }: Props) => {
+  const [updating, setUpdating] = useState(false);
   const allReviews = park.reviews.map((review) => review.rating);
   const ratingSum = allReviews.reduce((a, b) => a + b, 0);
   const ratingAverage = ratingSum / allReviews.length || 0;
@@ -73,28 +77,39 @@ const ParkDetails = ({ park }: Props) => {
     if (!session) {
       return router.push("/auth/signin");
     }
+    setUpdating(true);
     if (!isFavorited) {
       try {
-        await fetch(`/api/park/favorite/add/${park.id}`, {
+        const response = await fetch(`/api/park/favorite/add/${park.id}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
         });
+        const data = await response.json();
         refreshData();
-      } catch (err) {
-        console.error(err);
+        toast(<Toast variant="success" message="Park added to favorites" />);
+      } catch (err: any) {
+        toast(<Toast variant="error" message={err.message} />);
       }
     }
     if (isFavorited) {
       try {
-        await fetch(`/api/park/favorite/remove/${favoriteId}`, {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-        });
+        const response = await fetch(
+          `/api/park/favorite/remove/${favoriteId}`,
+          {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        const data = await response.json();
         refreshData();
-      } catch (err) {
-        console.error(err);
+        toast(
+          <Toast variant="success" message="Park removed from favorites" />
+        );
+      } catch (err: any) {
+        toast(<Toast variant="error" message={err.message} />);
       }
     }
+    setUpdating(false);
   };
 
   if (!park.published) {
@@ -135,6 +150,7 @@ const ParkDetails = ({ park }: Props) => {
           <div className="flex justify-between align-top">
             <h1 className="text-4xl mb-4">{park.name}</h1>
             <Button
+              disabled={updating}
               onClick={() =>
                 handleFavoriteClick(
                   park.favoriteUsers?.length

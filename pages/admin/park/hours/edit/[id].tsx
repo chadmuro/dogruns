@@ -9,6 +9,8 @@ import Layout from "../../../../../components/Layout";
 import ParkHoursForm, {
   ParkHoursFormInputs,
 } from "../../../../../components/forms/ParkHoursForm";
+import { toast } from "react-toastify";
+import Toast from "../../../../../components/shared/Toast";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -97,8 +99,9 @@ const ParkHours = ({ park }: Props) => {
       );
       const data = await response.json();
       await Router.push(`/park/${data.parkId}`);
-    } catch (err) {
-      console.error(err);
+      toast(<Toast variant="success" message="Park hours updated" />);
+    } catch (err: any) {
+      toast(<Toast variant="error" message={err.message} />);
     }
     setPosting(false);
   };

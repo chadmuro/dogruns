@@ -11,6 +11,8 @@ import ParkForm, {
 } from "../../../../components/forms/ParkForm";
 import { GetServerSideProps } from "next";
 import prisma from "../../../../lib/prisma";
+import { toast } from "react-toastify";
+import Toast from "../../../../components/shared/Toast";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const park = await prisma.park.findUnique({
@@ -81,8 +83,9 @@ const EditPark = ({ park }: Props) => {
       });
       const data = await response.json();
       await Router.push(`/admin/park/hours/edit/${data.id}`);
-    } catch (err) {
-      console.error(err);
+      toast(<Toast variant="success" message="Park information updated" />);
+    } catch (err: any) {
+      toast(<Toast variant="error" message={err.message} />);
     }
     setPosting(false);
   };

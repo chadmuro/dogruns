@@ -5,6 +5,8 @@ import { useRouter } from "next/router";
 import { Park, ParkHours, Review } from "@prisma/client";
 import ReviewForm, { ReviewFormInputs } from "../../forms/Review";
 import ReviewCard from "./Card";
+import { toast } from "react-toastify";
+import Toast from "../../shared/Toast";
 
 interface ReviewsProps {
   park: Park & {
@@ -53,8 +55,9 @@ const Reviews = ({ park }: ReviewsProps) => {
       });
       const data = await response.json();
       refreshData();
-    } catch (err) {
-      console.error(err);
+      toast(<Toast variant="success" message="New review added" />);
+    } catch (err: any) {
+      toast(<Toast variant="error" message={err.message} />);
     }
     setPosting(false);
   };
