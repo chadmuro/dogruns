@@ -1,3 +1,6 @@
 {
-  "login-button": "Login"
+  "login-button": "Login",
+  "profile": "Profile",
+  "language": "Language",
+  "sign-out-button": "Sign out"
 }

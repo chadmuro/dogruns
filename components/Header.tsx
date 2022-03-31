@@ -19,8 +19,6 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
   const { data: session, status } = useSession();
   const { t } = useTranslation("common");
 
-  console.log(t);
-
   const handleSignOut = () => {
     signOut();
     router.push("/");
@@ -75,7 +73,7 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
                 <li>
                   <Link href="/profile">
                     <a className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                      Profile
+                      {t("profile")}
                     </a>
                   </Link>
                 </li>
@@ -84,7 +82,7 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
                     href="#"
                     className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                   >
-                    Language
+                    {t("language")}
                   </a>
                 </li>
                 <li>
@@ -92,7 +90,7 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
                     onClick={handleSignOut}
                     className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-left"
                   >
-                    Sign out
+                    {t("sign-out-button")}
                   </button>
                 </li>
               </ul>
