@@ -7,7 +7,7 @@ import { getSession, useSession } from "next-auth/react";
 import Layout from "../../components/Layout";
 import prisma from "../../lib/prisma";
 import SecondaryButton from "../../components/shared/SecondaryButton";
-import { useSnackbar } from "notistack";
+// import { useSnackbar } from "notistack";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -44,7 +44,7 @@ type Props = {
 const Admin = ({ parks }: Props) => {
   const [deleting, setDeleting] = useState(false);
   const [publishing, setPublishing] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
+  // const { enqueueSnackbar } = useSnackbar();
   const { data: session, status } = useSession();
   const router = useRouter();
   const isAdmin = session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
@@ -59,9 +59,9 @@ const Admin = ({ parks }: Props) => {
       method: "DELETE",
     });
     const data = await response.json();
-    enqueueSnackbar("Park information deleted", {
-      variant: "success",
-    });
+    // enqueueSnackbar("Park information deleted", {
+    //   variant: "success",
+    // });
     refreshData();
     setDeleting(false);
   }
@@ -73,9 +73,9 @@ const Admin = ({ parks }: Props) => {
     });
     const data = await response.json();
     await Router.push(`/park/${id}`);
-    enqueueSnackbar("Park information published", {
-      variant: "success",
-    });
+    // enqueueSnackbar("Park information published", {
+    //   variant: "success",
+    // });
     setPublishing(false);
   }
 

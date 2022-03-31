@@ -9,7 +9,7 @@ import Layout from "../../../../../components/Layout";
 import ParkHoursForm, {
   ParkHoursFormInputs,
 } from "../../../../../components/forms/ParkHoursForm";
-import { useSnackbar } from "notistack";
+// import { useSnackbar } from "notistack";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -38,7 +38,7 @@ type Props = {
 };
 
 const ParkHours = ({ park }: Props) => {
-  const { enqueueSnackbar } = useSnackbar();
+  // const { enqueueSnackbar } = useSnackbar();
   const [posting, setPosting] = useState(false);
   const router = useRouter();
   const { id } = router.query;
@@ -99,13 +99,13 @@ const ParkHours = ({ park }: Props) => {
       );
       const data = await response.json();
       await Router.push(`/park/${data.parkId}`);
-      enqueueSnackbar("Park hours updated", {
-        variant: "success",
-      });
+      // enqueueSnackbar("Park hours updated", {
+      //   variant: "success",
+      // });
     } catch (err: any) {
-      enqueueSnackbar(err.message, {
-        variant: "error",
-      });
+      // enqueueSnackbar(err.message, {
+      //   variant: "error",
+      // });
     }
     setPosting(false);
   };

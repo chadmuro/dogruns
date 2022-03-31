@@ -10,7 +10,8 @@ import Reviews from "../../components/park/Reviews";
 import Rating from "../../components/park/Rating";
 import Button from "../../components/shared/Button";
 import { getSession, useSession } from "next-auth/react";
-import { useSnackbar } from "notistack";
+import { toast } from "react-toastify";
+import Toast from "../../components/shared/Toast";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -66,7 +67,6 @@ const ParkDetails = ({ park }: Props) => {
   const ratingAverage = ratingSum / allReviews.length || 0;
   const { data: session } = useSession();
   const router = useRouter();
-  const { enqueueSnackbar } = useSnackbar();
   const isFavorited = session && park.favoriteUsers.length;
 
   const refreshData = () => {
@@ -86,13 +86,9 @@ const ParkDetails = ({ park }: Props) => {
         });
         const data = await response.json();
         refreshData();
-        enqueueSnackbar("Park added to favorites", {
-          variant: "success",
-        });
+        toast(<Toast variant="success" message="Park added to favorites" />);
       } catch (err: any) {
-        enqueueSnackbar(err.message, {
-          variant: "error",
-        });
+        toast(<Toast variant="error" message={err.message} />);
       }
     }
     if (isFavorited) {
@@ -106,13 +102,11 @@ const ParkDetails = ({ park }: Props) => {
         );
         const data = await response.json();
         refreshData();
-        enqueueSnackbar("Park removed from favorites", {
-          variant: "success",
-        });
+        toast(
+          <Toast variant="success" message="Park removed from favorites" />
+        );
       } catch (err: any) {
-        enqueueSnackbar(err.message, {
-          variant: "error",
-        });
+        toast(<Toast variant="error" message={err.message} />);
       }
     }
     setUpdating(false);

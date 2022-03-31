@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ReactNode } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
+import { ToastContainer } from "react-toastify";
 
 type Props = {
   children: ReactNode;
@@ -77,6 +78,16 @@ const Layout: React.FC<Props> = (props) => {
 
         button {
           cursor: pointer;
+        }
+
+        .Toastify__toast-theme--light,
+        .Toastify__toast-theme--dark {
+          background: none;
+        }
+
+        .Toastify__toast-container--bottom-right {
+          bottom: 0;
+          right: 0;
         }
       `}</style>
     </div>

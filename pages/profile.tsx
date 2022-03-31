@@ -2,7 +2,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Dog } from "@prisma/client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useSnackbar } from "notistack";
+// import { useSnackbar } from "notistack";
 import { SubmitHandler, useForm } from "react-hook-form";
 import DogForm, { dogSchema, NewDogInputs } from "../components/forms/Dog";
 import Layout from "../components/Layout";
@@ -52,7 +52,7 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
   const [posting, setPosting] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
-  const { enqueueSnackbar } = useSnackbar();
+  // const { enqueueSnackbar } = useSnackbar();
 
   const refreshData = () => {
     router.replace(router.asPath);
@@ -104,14 +104,14 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
         body: JSON.stringify(body),
       });
       await response.json();
-      enqueueSnackbar("New dog added", {
-        variant: "success",
-      });
+      // enqueueSnackbar("New dog added", {
+      //   variant: "success",
+      // });
       refreshData();
     } catch (err: any) {
-      enqueueSnackbar(err.message, {
-        variant: "error",
-      });
+      // enqueueSnackbar(err.message, {
+      //   variant: "error",
+      // });
     }
     setPosting(false);
   };
@@ -136,14 +136,14 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
         body: JSON.stringify(body),
       });
       await response.json();
-      enqueueSnackbar("Dog information updated", {
-        variant: "success",
-      });
+      // enqueueSnackbar("Dog information updated", {
+      //   variant: "success",
+      // });
       refreshData();
     } catch (err: any) {
-      enqueueSnackbar(err.message, {
-        variant: "error",
-      });
+      // enqueueSnackbar(err.message, {
+      //   variant: "error",
+      // });
     }
     setPosting(false);
   };

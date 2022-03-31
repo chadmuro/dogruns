@@ -11,7 +11,7 @@ import ParkForm, {
 } from "../../../../components/forms/ParkForm";
 import { GetServerSideProps } from "next";
 import prisma from "../../../../lib/prisma";
-import { useSnackbar } from "notistack";
+// import { useSnackbar } from "notistack";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const park = await prisma.park.findUnique({
@@ -25,7 +25,7 @@ type Props = {
 };
 
 const EditPark = ({ park }: Props) => {
-  const { enqueueSnackbar } = useSnackbar();
+  // const { enqueueSnackbar } = useSnackbar();
   const [posting, setPosting] = useState(false);
   const { data: session, status } = useSession();
   const isAdmin = session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
@@ -83,13 +83,13 @@ const EditPark = ({ park }: Props) => {
       });
       const data = await response.json();
       await Router.push(`/admin/park/hours/edit/${data.id}`);
-      enqueueSnackbar("Park information updated", {
-        variant: "success",
-      });
+      // enqueueSnackbar("Park information updated", {
+      //   variant: "success",
+      // });
     } catch (err: any) {
-      enqueueSnackbar(err.message, {
-        variant: "error",
-      });
+      // enqueueSnackbar(err.message, {
+      //   variant: "error",
+      // });
     }
     setPosting(false);
   };

@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next";
 import Router, { useRouter } from "next/router";
 import { getSession, useSession } from "next-auth/react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useSnackbar } from "notistack";
+// import { useSnackbar } from "notistack";
 import { Park } from "@prisma/client";
 import prisma from "../../../lib/prisma";
 import Layout from "../../../components/Layout";
@@ -37,7 +37,7 @@ type Props = {
 };
 
 const ParkHours = ({ park }: Props) => {
-  const { enqueueSnackbar } = useSnackbar();
+  // const { enqueueSnackbar } = useSnackbar();
   const [posting, setPosting] = useState(false);
   const router = useRouter();
   const { id } = router.query;
@@ -96,13 +96,13 @@ const ParkHours = ({ park }: Props) => {
       });
       const data = await response.json();
       await Router.push(`/park/${data.parkId}`);
-      enqueueSnackbar("Park hours added", {
-        variant: "success",
-      });
+      // enqueueSnackbar("Park hours added", {
+      //   variant: "success",
+      // });
     } catch (err: any) {
-      enqueueSnackbar(err.message, {
-        variant: "error",
-      });
+      // enqueueSnackbar(err.message, {
+      //   variant: "error",
+      // });
     }
     setPosting(false);
   };
