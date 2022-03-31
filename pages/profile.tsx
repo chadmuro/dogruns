@@ -120,7 +120,7 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
     setPosting(true);
     const { name, image, breed, birthdate } = data;
     try {
-      let imageUrl;
+      let imageUrl: string | undefined;
       if (!!image.length) {
         imageUrl = await uploadImage(image, "dogruns_dogs");
       }
@@ -136,7 +136,7 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
         body: JSON.stringify(body),
       });
       await response.json();
-      enqueueSnackbar("Dog information saved", {
+      enqueueSnackbar("Dog information updated", {
         variant: "success",
       });
       refreshData();
