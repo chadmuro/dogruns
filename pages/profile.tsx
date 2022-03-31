@@ -2,7 +2,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Dog } from "@prisma/client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-// import { useSnackbar } from "notistack";
 import { SubmitHandler, useForm } from "react-hook-form";
 import DogForm, { dogSchema, NewDogInputs } from "../components/forms/Dog";
 import Layout from "../components/Layout";
@@ -12,6 +11,8 @@ import { getSession, useSession } from "next-auth/react";
 import prisma from "../lib/prisma";
 import { GetServerSideProps } from "next";
 import uploadImage from "../utils/uploadImage";
+import { toast } from "react-toastify";
+import Toast from "../components/shared/Toast";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -52,7 +53,6 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
   const [posting, setPosting] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
-  // const { enqueueSnackbar } = useSnackbar();
 
   const refreshData = () => {
     router.replace(router.asPath);
@@ -104,14 +104,10 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
         body: JSON.stringify(body),
       });
       await response.json();
-      // enqueueSnackbar("New dog added", {
-      //   variant: "success",
-      // });
+      toast(<Toast variant="success" message="New dog added" />);
       refreshData();
     } catch (err: any) {
-      // enqueueSnackbar(err.message, {
-      //   variant: "error",
-      // });
+      toast(<Toast variant="error" message={err.message} />);
     }
     setPosting(false);
   };
@@ -136,14 +132,10 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
         body: JSON.stringify(body),
       });
       await response.json();
-      // enqueueSnackbar("Dog information updated", {
-      //   variant: "success",
-      // });
+      toast(<Toast variant="success" message="Dog information updated" />);
       refreshData();
     } catch (err: any) {
-      // enqueueSnackbar(err.message, {
-      //   variant: "error",
-      // });
+      toast(<Toast variant="error" message={err.message} />);
     }
     setPosting(false);
   };

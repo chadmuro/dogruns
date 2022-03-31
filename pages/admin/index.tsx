@@ -7,7 +7,8 @@ import { getSession, useSession } from "next-auth/react";
 import Layout from "../../components/Layout";
 import prisma from "../../lib/prisma";
 import SecondaryButton from "../../components/shared/SecondaryButton";
-// import { useSnackbar } from "notistack";
+import { toast } from "react-toastify";
+import Toast from "../../components/shared/Toast";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -44,7 +45,6 @@ type Props = {
 const Admin = ({ parks }: Props) => {
   const [deleting, setDeleting] = useState(false);
   const [publishing, setPublishing] = useState(false);
-  // const { enqueueSnackbar } = useSnackbar();
   const { data: session, status } = useSession();
   const router = useRouter();
   const isAdmin = session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
@@ -59,9 +59,7 @@ const Admin = ({ parks }: Props) => {
       method: "DELETE",
     });
     const data = await response.json();
-    // enqueueSnackbar("Park information deleted", {
-    //   variant: "success",
-    // });
+    toast(<Toast variant="success" message="Park information deleted" />);
     refreshData();
     setDeleting(false);
   }
@@ -73,9 +71,7 @@ const Admin = ({ parks }: Props) => {
     });
     const data = await response.json();
     await Router.push(`/park/${id}`);
-    // enqueueSnackbar("Park information published", {
-    //   variant: "success",
-    // });
+    toast(<Toast variant="success" message="Park information published" />);
     setPublishing(false);
   }
 
@@ -114,6 +110,7 @@ const Admin = ({ parks }: Props) => {
               <div className="flex">
                 <div className="pr-4">
                   <SecondaryButton
+                    loading={deleting}
                     type="button"
                     text="Delete"
                     variant="secondary"
@@ -132,6 +129,7 @@ const Admin = ({ parks }: Props) => {
                   </Link>
                 </div>
                 <SecondaryButton
+                  loading={publishing}
                   type="button"
                   onClick={() => publishPark(park.id)}
                   text="Publish"

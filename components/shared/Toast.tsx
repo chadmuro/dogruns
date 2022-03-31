@@ -14,7 +14,7 @@ const Toast = ({
   if (variant === "info") {
     return (
       <div
-        className="flex p-4 mb-4 bg-blue-100 border-t-4 border-blue-500 dark:bg-blue-200"
+        className="flex p-4 bg-blue-100 border-t-4 border-blue-500 dark:bg-blue-200"
         role="alert"
       >
         <svg
@@ -57,7 +57,7 @@ const Toast = ({
   if (variant === "error") {
     return (
       <div
-        className="flex p-4 mb-4 bg-red-100 border-t-4 border-red-500 dark:bg-red-200"
+        className="flex p-4 bg-red-100 border-t-4 border-red-500 dark:bg-red-200"
         role="alert"
       >
         <svg
@@ -100,7 +100,7 @@ const Toast = ({
   if (variant === "success") {
     return (
       <div
-        className="flex p-4 mb-4 bg-green-100 border-t-4 border-green-500 dark:bg-green-200"
+        className="flex p-4 bg-green-100 border-t-4 border-green-500 dark:bg-green-200"
         role="alert"
       >
         <svg
@@ -143,7 +143,7 @@ const Toast = ({
   if (variant === "warning") {
     return (
       <div
-        className="flex p-4 mb-4 bg-yellow-100 border-t-4 border-yellow-500 dark:bg-yellow-200"
+        className="flex p-4 bg-yellow-100 border-t-4 border-yellow-500 dark:bg-yellow-200"
         role="alert"
       >
         <svg
@@ -187,7 +187,7 @@ const Toast = ({
   }
   return (
     <div
-      className="flex p-4 mb-4 bg-gray-100 border-t-4 border-gray-500 dark:bg-gray-700"
+      className="flex p-4 bg-gray-100 border-t-4 border-gray-500 dark:bg-gray-700"
       role="alert"
     >
       <svg

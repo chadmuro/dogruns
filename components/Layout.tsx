@@ -80,14 +80,14 @@ const Layout: React.FC<Props> = (props) => {
           cursor: pointer;
         }
 
+        .Toastify__toast {
+          margin-bottom: 0;
+          padding-bottom: 0;
+        }
+
         .Toastify__toast-theme--light,
         .Toastify__toast-theme--dark {
           background: none;
-        }
-
-        .Toastify__toast-container--bottom-right {
-          bottom: 0;
-          right: 0;
         }
       `}</style>
     </div>

@@ -5,7 +5,8 @@ import { useRouter } from "next/router";
 import { Park, ParkHours, Review } from "@prisma/client";
 import ReviewForm, { ReviewFormInputs } from "../../forms/Review";
 import ReviewCard from "./Card";
-// import { useSnackbar } from "notistack";
+import { toast } from "react-toastify";
+import Toast from "../../shared/Toast";
 
 interface ReviewsProps {
   park: Park & {
@@ -21,7 +22,6 @@ interface ReviewsProps {
 
 const Reviews = ({ park }: ReviewsProps) => {
   const router = useRouter();
-  // const { enqueueSnackbar } = useSnackbar();
   const { data: session } = useSession();
   const [rating, setRating] = useState(5);
   const [posting, setPosting] = useState(false);
@@ -55,13 +55,9 @@ const Reviews = ({ park }: ReviewsProps) => {
       });
       const data = await response.json();
       refreshData();
-      // enqueueSnackbar("New review added", {
-      //   variant: "success",
-      // });
+      toast(<Toast variant="success" message="New review added" />);
     } catch (err: any) {
-      // enqueueSnackbar(err.message, {
-      //   variant: "error",
-      // });
+      toast(<Toast variant="error" message={err.message} />);
     }
     setPosting(false);
   };

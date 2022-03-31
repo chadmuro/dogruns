@@ -9,7 +9,7 @@ const App = ({ Component, pageProps }: AppProps) => {
     <SessionProvider session={pageProps.session}>
       <Component {...pageProps} />
       <ToastContainer
-        position="bottom-right"
+        position="bottom-left"
         autoClose={5000}
         hideProgressBar={true}
         closeButton={false}

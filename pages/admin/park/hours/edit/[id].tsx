@@ -9,7 +9,8 @@ import Layout from "../../../../../components/Layout";
 import ParkHoursForm, {
   ParkHoursFormInputs,
 } from "../../../../../components/forms/ParkHoursForm";
-// import { useSnackbar } from "notistack";
+import { toast } from "react-toastify";
+import Toast from "../../../../../components/shared/Toast";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -38,7 +39,6 @@ type Props = {
 };
 
 const ParkHours = ({ park }: Props) => {
-  // const { enqueueSnackbar } = useSnackbar();
   const [posting, setPosting] = useState(false);
   const router = useRouter();
   const { id } = router.query;
@@ -99,13 +99,9 @@ const ParkHours = ({ park }: Props) => {
       );
       const data = await response.json();
       await Router.push(`/park/${data.parkId}`);
-      // enqueueSnackbar("Park hours updated", {
-      //   variant: "success",
-      // });
+      toast(<Toast variant="success" message="Park hours updated" />);
     } catch (err: any) {
-      // enqueueSnackbar(err.message, {
-      //   variant: "error",
-      // });
+      toast(<Toast variant="error" message={err.message} />);
     }
     setPosting(false);
   };
