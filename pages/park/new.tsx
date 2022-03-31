@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useSession } from "next-auth/react";
 import Router from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -12,6 +13,15 @@ import ParkForm, {
 import uploadImage from "../../utils/uploadImage";
 import { toast } from "react-toastify";
 import Toast from "../../components/shared/Toast";
+import { GetServerSideProps } from "next";
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale as string, ["common"])),
+    },
+  };
+};
 
 const NewPark = () => {
   const [posting, setPosting] = useState(false);

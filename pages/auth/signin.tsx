@@ -1,14 +1,19 @@
 import { useState } from "react";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { getProviders, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
+import { GetServerSideProps } from "next";
 
-export async function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   const providers = await getProviders();
   return {
-    props: { providers },
+    props: {
+      providers,
+      ...(await serverSideTranslations(locale as string, ["common"])),
+    },
   };
-}
+};
 
 type Props = {
   providers: any;

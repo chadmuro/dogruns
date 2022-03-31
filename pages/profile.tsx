@@ -1,4 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { Dog } from "@prisma/client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -16,8 +17,7 @@ import Toast from "../components/shared/Toast";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
-  res,
-  params,
+  locale,
 }) => {
   const session = await getSession({ req });
   const dogs = await prisma.dog.findMany({
@@ -38,7 +38,11 @@ export const getServerSideProps: GetServerSideProps = async ({
     },
   });
   return {
-    props: { dogs, favoriteParks },
+    props: {
+      dogs,
+      favoriteParks,
+      ...(await serverSideTranslations(locale as string, ["common"])),
+    },
   };
 };
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
+import { useTranslation } from "next-i18next";
 import Button from "./shared/Button";
 import useComponentVisible from "../hooks/useComponentVisible";
 
@@ -16,6 +17,9 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
   const { ref, isComponentVisible, setIsComponentVisible } =
     useComponentVisible(false);
   const { data: session, status } = useSession();
+  const { t } = useTranslation("common");
+
+  console.log(t);
 
   const handleSignOut = () => {
     signOut();
@@ -29,7 +33,7 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
     authButton = (
       <Link href="/auth/signin">
         <a>
-          <Button type="button" text="Login" />
+          <Button type="button" text={t("login-button")} />
         </a>
       </Link>
     );

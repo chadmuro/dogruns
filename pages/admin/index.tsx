@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { Park, ParkHours } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import Router, { useRouter } from "next/router";
@@ -13,14 +14,19 @@ import Toast from "../../components/shared/Toast";
 export const getServerSideProps: GetServerSideProps = async ({
   req,
   res,
-  params,
+  locale,
 }) => {
   const session = await getSession({ req });
   const isAdmin = session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   if (!session || !isAdmin) {
     res.statusCode = 403;
-    return { props: { parks: [] } };
+    return {
+      props: {
+        parks: [],
+        ...(await serverSideTranslations(locale as string, ["common"])),
+      },
+    };
   }
 
   const parks = await prisma.park.findMany({
@@ -32,7 +38,10 @@ export const getServerSideProps: GetServerSideProps = async ({
     },
   });
   return {
-    props: { parks },
+    props: {
+      parks,
+      ...(await serverSideTranslations(locale as string, ["common"])),
+    },
   };
 };
 
