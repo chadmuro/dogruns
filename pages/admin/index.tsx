@@ -55,9 +55,10 @@ const Admin = ({ parks }: Props) => {
 
   async function deletePark(id: string) {
     setDeleting(true);
-    await fetch(`api/park/delete/${id}`, {
+    const response = await fetch(`api/park/delete/${id}`, {
       method: "DELETE",
     });
+    const data = await response.json();
     enqueueSnackbar("Park information deleted", {
       variant: "success",
     });
@@ -67,9 +68,10 @@ const Admin = ({ parks }: Props) => {
 
   async function publishPark(id: string) {
     setPublishing(true);
-    await fetch(`/api/park/publish/${id}`, {
+    const response = await fetch(`/api/park/publish/${id}`, {
       method: "PUT",
     });
+    const data = await response.json();
     await Router.push(`/park/${id}`);
     enqueueSnackbar("Park information published", {
       variant: "success",
