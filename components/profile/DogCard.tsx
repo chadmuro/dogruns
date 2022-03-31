@@ -1,6 +1,7 @@
 import { Dog } from "@prisma/client";
 import Image from "next/image";
 import calculateAge from "../../utils/calculateAge";
+import dateFormatter from "../../utils/dateFormatter";
 
 interface DogCardProps {
   dog: Dog;
@@ -40,7 +41,9 @@ const DogCard = ({ dog, selectedDog, setSelectedDog }: DogCardProps) => {
                 {calculateAge(dog.birthdate)}
               </div>
               <div className="text-sm text-gray-500 dark:text-gray-400">
-                {`Birthdate: ${dog.birthdate}`}
+                {`Birthdate: ${dateFormatter.format(
+                  new Date(dog.birthdate as string)
+                )}`}
               </div>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import { Review } from "@prisma/client";
+import dateFormatter from "../../../utils/dateFormatter";
 import Rating from "../Rating";
 
 interface ReviewCardProps {
@@ -28,7 +29,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
               dateTime="2014-08-16 19:00"
               className="block text-sm text-gray-500 dark:text-gray-400"
             >
-              {date}
+              {dateFormatter.format(new Date(date))}
             </time>
           </p>
         </div>
