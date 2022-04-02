@@ -1,5 +1,7 @@
 import { Park } from "@prisma/client";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import Button from "../shared/Button";
 
@@ -8,6 +10,10 @@ interface ParkCardProps {
 }
 
 const ParkCard = ({ park }: ParkCardProps) => {
+  const { t } = useTranslation("home");
+  const { locale } = useRouter();
+  const isJapanese = locale === "ja";
+
   return (
     <Link href={`/park/${park.id}`}>
       <a className="max-w-sm w-full bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 justify-self-center">
@@ -26,16 +32,16 @@ const ParkCard = ({ park }: ParkCardProps) => {
         </div>
         <div className="p-5">
           <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            {park.name}
+            {isJapanese ? park.nameJapanese : park.name}
           </h5>
           <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-            {park.address}
+            {isJapanese ? park.addressJapanese : park.address}
           </p>
           <Button
             type="button"
             text={
               <>
-                See details
+                {t("park-card-details")}
                 <svg
                   className="ml-2 -mr-1 w-4 h-4"
                   fill="currentColor"

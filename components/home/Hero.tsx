@@ -1,4 +1,5 @@
 import { useSession } from "next-auth/react";
+import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import Button from "../shared/Button";
 import SecondaryButton from "../shared/SecondaryButton";
@@ -6,6 +7,7 @@ import SecondaryButton from "../shared/SecondaryButton";
 const Hero = () => {
   const { data: session } = useSession();
   const isAdmin = session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+  const { t } = useTranslation("home");
 
   return (
     <div className="lg:2/6 xl:w-2/4 my-20 lg:my-40 lg:ml-16 text-left">
@@ -13,12 +15,12 @@ const Hero = () => {
         Tokyo Dog Runs
       </h1>
       <h3 className="my-6 text-xl font-light text-gray-500 dark:text-gray-300">
-        Let your dogs run free and make new friends!
+        {t("subtitle")}
       </h3>
       <div className="flex items-baseline">
         <Link href="#most-popular">
           <a>
-            <Button type="button" text="See parks" size="lg" />
+            <Button type="button" text={t("parks-button")} size="lg" />
           </a>
         </Link>
         {!!session && (
@@ -28,7 +30,7 @@ const Hero = () => {
                 variant="secondary"
                 type="button"
                 size="lg"
-                text="Add new park"
+                text={t("add-park-button")}
               />
             </a>
           </Link>

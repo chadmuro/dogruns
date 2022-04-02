@@ -1,6 +1,8 @@
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { signOut, useSession } from "next-auth/react";
+import { signOut, useSession, getSession } from "next-auth/react";
+import { useTranslation } from "next-i18next";
 import Button from "./shared/Button";
 import useComponentVisible from "../hooks/useComponentVisible";
 
@@ -13,8 +15,17 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
   const router = useRouter();
   const isActive: (pathname: string) => boolean = (pathname) =>
     router.pathname === pathname;
-  const { ref, isComponentVisible, setIsComponentVisible } =
-    useComponentVisible(false);
+  const {
+    ref: profileRef,
+    isComponentVisible: isProfileVisible,
+    setIsComponentVisible: setIsProfileVisible,
+  } = useComponentVisible(false);
+  const {
+    ref: languageRef,
+    isComponentVisible: isLanguageVisible,
+    setIsComponentVisible: setIsLanguageVisible,
+  } = useComponentVisible(false);
+  const { t } = useTranslation("common");
   const { data: session, status } = useSession();
 
   const handleSignOut = () => {
@@ -29,7 +40,7 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
     authButton = (
       <Link href="/auth/signin">
         <a>
-          <Button type="button" text="Login" />
+          <Button type="button" text={t("login-button")} />
         </a>
       </Link>
     );
@@ -42,7 +53,7 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
           id="user-menu-button"
           aria-expanded="false"
           data-dropdown-toggle="dropdown"
-          onClick={() => setIsComponentVisible(true)}
+          onClick={() => setIsProfileVisible(true)}
         >
           <span className="sr-only">Open user menu</span>
           <img
@@ -53,11 +64,11 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
         </button>
         {/* <!-- Dropdown menu --> */}
         <div
-          ref={ref}
+          ref={profileRef}
           className="absolute z-50 my-8 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600"
           id="dropdown"
         >
-          {isComponentVisible && (
+          {isProfileVisible && (
             <>
               <div className="py-3 px-4">
                 <span className="block text-sm text-gray-900 dark:text-white">
@@ -71,24 +82,16 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
                 <li>
                   <Link href="/profile">
                     <a className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                      Profile
+                      {t("profile")}
                     </a>
                   </Link>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                  >
-                    Language
-                  </a>
                 </li>
                 <li>
                   <button
                     onClick={handleSignOut}
                     className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-left"
                   >
-                    Sign out
+                    {t("sign-out-button")}
                   </button>
                 </li>
               </ul>
@@ -109,6 +112,56 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
 
   let right = (
     <div className="flex items-center md:order-2 relative">
+      <div className="relative flex flex-col items-end">
+        <button
+          onClick={() => setIsLanguageVisible(true)}
+          type="button"
+          className="flex items-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
+        >
+          {router.locale === "ja" ? "日本語" : "English"}
+          <svg
+            className="w-4 h-4 ml-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M19 9l-7 7-7-7"
+            ></path>
+          </svg>
+        </button>
+        {/* <!-- Dropdown menu --> */}
+        <div
+          ref={languageRef}
+          className="absolute z-50 my-8 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600"
+          id="dropdown"
+        >
+          {isLanguageVisible && (
+            <>
+              <ul className="py-1" aria-labelledby="dropdown">
+                <li>
+                  <Link href={router.asPath} locale="en">
+                    <a className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                      English
+                    </a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href={router.asPath} locale="ja">
+                    <a className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                      日本語
+                    </a>
+                  </Link>
+                </li>
+              </ul>
+            </>
+          )}
+        </div>
+      </div>
       <button
         id="theme-toggle"
         type="button"
@@ -141,6 +194,7 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
           </svg>
         )}
       </button>
+
       {authButton}
     </div>
   );

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetServerSideProps } from "next";
 import Router, { useRouter } from "next/router";
 import { getSession, useSession } from "next-auth/react";
@@ -16,6 +17,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
   res,
   params,
+  locale,
 }) => {
   const session = await getSession({ req });
   if (!session) {
@@ -29,7 +31,10 @@ export const getServerSideProps: GetServerSideProps = async ({
     },
   });
   return {
-    props: { park },
+    props: {
+      park,
+      ...(await serverSideTranslations(locale as string, ["common"])),
+    },
   };
 };
 

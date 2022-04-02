@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useSession } from "next-auth/react";
 import Router from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -14,11 +15,19 @@ import prisma from "../../../../lib/prisma";
 import { toast } from "react-toastify";
 import Toast from "../../../../components/shared/Toast";
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  params,
+  locale,
+}) => {
   const park = await prisma.park.findUnique({
     where: { id: params?.id as string },
   });
-  return { props: { park } };
+  return {
+    props: {
+      park,
+      ...(await serverSideTranslations(locale as string, ["common"])),
+    },
+  };
 };
 
 type Props = {

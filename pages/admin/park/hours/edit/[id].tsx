@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetServerSideProps } from "next";
 import Router, { useRouter } from "next/router";
 import { getSession, useSession } from "next-auth/react";
@@ -16,11 +17,17 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
   res,
   params,
+  locale,
 }) => {
   const session = await getSession({ req });
   if (!session) {
     res.statusCode = 403;
-    return { props: { park: null } };
+    return {
+      props: {
+        park: null,
+        ...(await serverSideTranslations(locale as string, ["common"])),
+      },
+    };
   }
 
   const park = await prisma.park.findUnique({
@@ -30,7 +37,10 @@ export const getServerSideProps: GetServerSideProps = async ({
     include: { parkHours: true },
   });
   return {
-    props: { park },
+    props: {
+      park,
+      ...(await serverSideTranslations(locale as string, ["common"])),
+    },
   };
 };
 
