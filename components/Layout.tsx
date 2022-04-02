@@ -1,7 +1,6 @@
 import React, { useState, useEffect, ReactNode } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
-import { ToastContainer } from "react-toastify";
 
 type Props = {
   children: ReactNode;
