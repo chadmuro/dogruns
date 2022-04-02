@@ -1,5 +1,6 @@
 import { GetServerSideProps } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "next-i18next";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -48,7 +49,10 @@ export const getServerSideProps: GetServerSideProps = async ({
   return {
     props: {
       park,
-      ...(await serverSideTranslations(locale as string, ["common"])),
+      ...(await serverSideTranslations(locale as string, [
+        "common",
+        "parkDetails",
+      ])),
     },
   };
 };
@@ -74,6 +78,8 @@ const ParkDetails = ({ park }: Props) => {
   const { data: session } = useSession();
   const router = useRouter();
   const isFavorited = session && park.favoriteUsers.length;
+  const { t } = useTranslation("parkDetails");
+  const isJapanese = router.locale === "ja";
 
   const refreshData = () => {
     router.replace(router.asPath);
@@ -154,7 +160,9 @@ const ParkDetails = ({ park }: Props) => {
         </section>
         <section className="flex flex-col mb-8">
           <div className="flex justify-between align-top">
-            <h1 className="text-4xl mb-4">{park.name}</h1>
+            <h1 className="text-4xl mb-4">
+              {isJapanese ? park.nameJapanese : park.name}
+            </h1>
             <Button
               disabled={updating}
               onClick={() =>
@@ -178,7 +186,9 @@ const ParkDetails = ({ park }: Props) => {
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                   </svg>
                   <p className="hidden sm:block">
-                    {isFavorited ? "Favorite Park" : "Add to favorites"}
+                    {isFavorited
+                      ? t("add-favorite", { ns: "parkDetails" })
+                      : t("favorite-park")}
                   </p>
                 </>
               }
@@ -186,8 +196,10 @@ const ParkDetails = ({ park }: Props) => {
           </div>
           <div className="flex flex-col sm:flex-row">
             <div className="mb-8 sm:mb-0 w-full sm:w-1/2">
-              <h2 className="text-xl">Information:</h2>
-              <p className="mb-4">{park.address}</p>
+              <h2 className="text-xl">{t("information")}</h2>
+              <p className="mb-4">
+                {isJapanese ? park.addressJapanese : park.address}
+              </p>
               <div className="mb-4">
                 <a
                   href={park.googleMapLink}
@@ -227,7 +239,7 @@ const ParkDetails = ({ park }: Props) => {
                             d="M28.24,22c0.79-0.95,1.26-2.17,1.26-3.5c0-3.04-2.46-5.5-5.5-5.5c-1.71,0-3.24,0.78-4.24,2L28.4,4.74	c3.59,1.22,6.53,3.91,8.17,7.38L28.24,22z"
                           ></path>
                         </svg>
-                        <p className="px-1">View on Google Maps</p>
+                        <p className="px-1">{`${t("google-maps")}`}</p>
                         <svg
                           className="w-6 h-6"
                           fill="none"
@@ -260,9 +272,9 @@ const ParkDetails = ({ park }: Props) => {
                     <p>No reviews yet</p>
                   )}
                 </div>
-                <p>{`Type: ${park.type}`}</p>
-                <p>{`Price: ${park.price || "Free"}`}</p>
-                <p>{`Additional Information: ${
+                <p>{`${t("type")} : ${park.type}`}</p>
+                <p>{`${t("price")} : ${park.price || "Free"}`}</p>
+                <p>{`${t("additional-information")} : ${
                   park.additionalInformation || "None"
                 }`}</p>
               </div>
@@ -270,16 +282,16 @@ const ParkDetails = ({ park }: Props) => {
             <div className="flex w-full sm:w-1/2">
               <div className="hidden sm:block h-64 border-l-2 border-gray-500 px-2" />
               <div className="flex flex-col sm:pl-8 md:pl-16">
-                <h2 className="text-xl">Park Hours:</h2>
+                <h2 className="text-xl">{t("park-hours")}</h2>
                 <div className="flex leading-8 mb-2">
                   <ul>
-                    <li>Monday</li>
-                    <li>Tuesday</li>
-                    <li>Wednesday</li>
-                    <li>Thursday</li>
-                    <li>Friday</li>
-                    <li>Saturday</li>
-                    <li>Sunday</li>
+                    <li>{t("monday")}</li>
+                    <li>{t("tuesday")}</li>
+                    <li>{t("wednesday")}</li>
+                    <li>{t("thursday")}</li>
+                    <li>{t("friday")}</li>
+                    <li>{t("saturday")}</li>
+                    <li>{t("sunday")}</li>
                   </ul>
                   <ul className="pl-4 flex-1">
                     <li>{park.parkHours?.monday || "Not available..."}</li>
@@ -293,7 +305,7 @@ const ParkDetails = ({ park }: Props) => {
                 </div>
                 <p>
                   {!!park.parkHours?.extra &&
-                    `Additional Information: ${park.parkHours?.extra}`}
+                    `${t("park-hours-additional")}: ${park.parkHours?.extra}`}
                 </p>
               </div>
             </div>

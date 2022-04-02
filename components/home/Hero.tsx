@@ -20,7 +20,7 @@ const Hero = () => {
       <div className="flex items-baseline">
         <Link href="#most-popular">
           <a>
-            <Button type="button" text="See parks" size="lg" />
+            <Button type="button" text={t("parks-button")} size="lg" />
           </a>
         </Link>
         {!!session && (
@@ -30,7 +30,7 @@ const Hero = () => {
                 variant="secondary"
                 type="button"
                 size="lg"
-                text="Add new park"
+                text={t("add-park-button")}
               />
             </a>
           </Link>
