@@ -158,7 +158,7 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
         birthdate: "",
       });
     }
-  }, [selectedDog]);
+  }, [selectedDog, reset]);
 
   return (
     <Layout>

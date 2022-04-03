@@ -1,7 +1,7 @@
-import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { signOut, useSession, getSession } from "next-auth/react";
+import Image from "next/image";
+import { signOut, useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import Button from "./shared/Button";
 import useComponentVisible from "../hooks/useComponentVisible";
@@ -56,11 +56,15 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
           onClick={() => setIsProfileVisible(true)}
         >
           <span className="sr-only">Open user menu</span>
-          <img
-            className="w-8 h-8 rounded-full"
-            src={session.user?.image || ""}
-            alt="user photo"
-          />
+          <div className="relative w-8 h-8 rounded-full overflow-hidden">
+            <Image
+              className="absolute"
+              src={session.user?.image || ""}
+              alt="user photo"
+              layout="fill"
+              objectFit="cover"
+            />
+          </div>
         </button>
         {/* <!-- Dropdown menu --> */}
         <div
