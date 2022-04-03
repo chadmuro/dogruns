@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useRouter } from "next/router";
 import { Park, ParkHours, Review } from "@prisma/client";
 import ReviewForm, { ReviewFormInputs } from "../../forms/Review";
 import ReviewCard from "./Card";
 import { toast } from "react-toastify";
 import Toast from "../../shared/Toast";
+import useRouterRefresh from "../../../hooks/useRouterRefresh";
 
 interface ReviewsProps {
   park: Park & {
@@ -21,10 +21,10 @@ interface ReviewsProps {
 }
 
 const Reviews = ({ park }: ReviewsProps) => {
-  const router = useRouter();
   const { data: session } = useSession();
   const [rating, setRating] = useState(5);
   const [posting, setPosting] = useState(false);
+  const refreshData = useRouterRefresh();
   const { register, handleSubmit, reset } = useForm<ReviewFormInputs>({
     defaultValues: {
       comment: "",
@@ -34,10 +34,6 @@ const Reviews = ({ park }: ReviewsProps) => {
   function handleValueChange(event: React.ChangeEvent<HTMLInputElement>) {
     setRating(parseInt(event.target.value, 10));
   }
-
-  const refreshData = () => {
-    router.replace(router.asPath);
-  };
 
   const onSubmit: SubmitHandler<ReviewFormInputs> = async (data) => {
     setPosting(true);
@@ -55,9 +51,9 @@ const Reviews = ({ park }: ReviewsProps) => {
       });
       const data = await response.json();
       refreshData();
+      toast(<Toast variant="success" message="New review added" />);
       reset();
       setRating(5);
-      toast(<Toast variant="success" message="New review added" />);
     } catch (err: any) {
       toast(<Toast variant="error" message={err.message} />);
     }

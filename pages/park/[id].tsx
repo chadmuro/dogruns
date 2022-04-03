@@ -14,6 +14,7 @@ import Button from "../../components/shared/Button";
 import { getSession, useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import Toast from "../../components/shared/Toast";
+import useRouterRefresh from "../../hooks/useRouterRefresh";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -80,10 +81,7 @@ const ParkDetails = ({ park }: Props) => {
   const isFavorited = session && park.favoriteUsers.length;
   const { t } = useTranslation("parkDetails");
   const isJapanese = router.locale === "ja";
-
-  const refreshData = () => {
-    router.replace(router.asPath);
-  };
+  const refreshData = useRouterRefresh();
 
   const handleFavoriteClick = async (favoriteId?: string) => {
     if (!session) {
