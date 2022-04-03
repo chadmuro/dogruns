@@ -1,4 +1,5 @@
 import { Review } from "@prisma/client";
+import Image from "next/image";
 import dateFormatter from "../../../utils/dateFormatter";
 import Rating from "../Rating";
 
@@ -17,11 +18,15 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
   return (
     <article className="bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 p-4 mb-4 w-full">
       <div className="flex items-center mb-4 space-x-4">
-        <img
-          className="w-10 h-10 rounded-full"
-          src={review.user.image}
-          alt="reviewer name"
-        />
+        <div className="relative w-10 h-10 rounded-full overflow-hidden">
+          <Image
+            className="absolute"
+            src={review.user.image}
+            alt="reviewer name"
+            layout="fill"
+            objectFit="cover"
+          />
+        </div>
         <div className="space-y-1 font-medium dark:text-white">
           <p>
             {review.user.name}

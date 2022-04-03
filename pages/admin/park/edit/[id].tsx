@@ -61,7 +61,7 @@ const EditPark = ({ park }: Props) => {
     if (status !== "loading" && !isAdmin) {
       Router.push("/");
     }
-  }, [isAdmin]);
+  }, [isAdmin, status]);
 
   const onSubmit: SubmitHandler<ParkFormInputs> = async (data) => {
     setPosting(true);

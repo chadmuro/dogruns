@@ -88,7 +88,7 @@ const Admin = ({ parks }: Props) => {
     if (status !== "loading" && !isAdmin) {
       Router.push("/");
     }
-  }, [isAdmin]);
+  }, [isAdmin, status]);
 
   let parkData: React.ReactNode;
   if (!parks.length) {
