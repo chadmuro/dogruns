@@ -44,7 +44,6 @@ const Layout: React.FC<Props> = (props) => {
   const variants = {
     hidden: { opacity: 0, x: -200, y: 0 },
     enter: { opacity: 1, x: 0, y: 0 },
-    // exit: { opacity: 0, x: 100, y: -100 },
   };
 
   return (
@@ -53,10 +52,9 @@ const Layout: React.FC<Props> = (props) => {
       <motion.div
         key="main"
         className="px-4 max-w-screen-xl mx-auto flex-1 w-full"
-        variants={variants} // Pass the variant object into Framer Motion
-        initial="hidden" // Set the initial state to variants.hidden
-        animate="enter" // Animated state to variants.enter
-        exit="exit" // Exit state (used later) to variants.exit
+        variants={variants}
+        initial="hidden"
+        animate="enter"
         transition={{ type: "linear" }}
       >
         {props.children}
