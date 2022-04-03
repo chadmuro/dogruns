@@ -2,7 +2,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { Dog } from "@prisma/client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import DogForm, { dogSchema, NewDogInputs } from "../components/forms/Dog";
 import Layout from "../components/Layout";
@@ -14,6 +13,7 @@ import { GetServerSideProps } from "next";
 import uploadImage from "../utils/uploadImage";
 import { toast } from "react-toastify";
 import Toast from "../components/shared/Toast";
+import useRouterRefresh from "../hooks/useRouterRefresh";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -56,12 +56,7 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
   const [selectedDog, setSelectedDog] = useState<Dog | null>(null);
   const [posting, setPosting] = useState(false);
   const { data: session } = useSession();
-  const router = useRouter();
-
-  const refreshData = () => {
-    router.replace(router.asPath);
-    hideForm();
-  };
+  const refreshData = useRouterRefresh();
 
   const favoriteParkNames = favoriteParks
     .map((park) => park.park.name)
@@ -70,7 +65,6 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
   const {
     register,
     handleSubmit,
-    setValue,
     reset,
     formState: { errors },
   } = useForm<NewDogInputs>({
@@ -108,8 +102,9 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
         body: JSON.stringify(body),
       });
       await response.json();
-      toast(<Toast variant="success" message="New dog added" />);
       refreshData();
+      hideForm();
+      toast(<Toast variant="success" message="New dog added" />);
     } catch (err: any) {
       toast(<Toast variant="error" message={err.message} />);
     }
@@ -136,8 +131,9 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
         body: JSON.stringify(body),
       });
       await response.json();
-      toast(<Toast variant="success" message="Dog information updated" />);
       refreshData();
+      hideForm();
+      toast(<Toast variant="success" message="Dog information updated" />);
     } catch (err: any) {
       toast(<Toast variant="error" message={err.message} />);
     }

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { Park, ParkHours } from "@prisma/client";
 import { GetServerSideProps } from "next";
-import Router, { useRouter } from "next/router";
+import Router from "next/router";
 import Link from "next/link";
 import { getSession, useSession } from "next-auth/react";
 import Layout from "../../components/Layout";
@@ -10,6 +10,7 @@ import prisma from "../../lib/prisma";
 import SecondaryButton from "../../components/shared/SecondaryButton";
 import { toast } from "react-toastify";
 import Toast from "../../components/shared/Toast";
+import useRouterRefresh from "../../hooks/useRouterRefresh";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -55,12 +56,8 @@ const Admin = ({ parks }: Props) => {
   const [deleting, setDeleting] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const { data: session, status } = useSession();
-  const router = useRouter();
   const isAdmin = session?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-
-  const refreshData = () => {
-    router.replace(router.asPath);
-  };
+  const refreshData = useRouterRefresh();
 
   async function deletePark(id: string) {
     setDeleting(true);
@@ -68,8 +65,8 @@ const Admin = ({ parks }: Props) => {
       method: "DELETE",
     });
     const data = await response.json();
-    toast(<Toast variant="success" message="Park information deleted" />);
     refreshData();
+    toast(<Toast variant="success" message="Park information deleted" />);
     setDeleting(false);
   }
 
@@ -151,7 +148,11 @@ const Admin = ({ parks }: Props) => {
     );
   }
 
-  return <Layout>{parkData}</Layout>;
+  return (
+    <Layout>
+      <main>{parkData}</main>
+    </Layout>
+  );
 };
 
 export default Admin;

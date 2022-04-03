@@ -1,5 +1,6 @@
 import { Park } from "@prisma/client";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
@@ -15,8 +16,13 @@ const ParkCard = ({ park }: ParkCardProps) => {
   const isJapanese = locale === "ja";
 
   return (
-    <Link href={`/park/${park.id}`}>
-      <a className="max-w-sm w-full bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 justify-self-center">
+    <Link passHref href={`/park/${park.id}`}>
+      <motion.a
+        className="max-w-sm w-full bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 justify-self-center"
+        whileHover={{
+          scale: 1.05,
+        }}
+      >
         <div className="relative w-full h-48">
           <Image
             className="rounded-t-lg"
@@ -58,7 +64,7 @@ const ParkCard = ({ park }: ParkCardProps) => {
             }
           />
         </div>
-      </a>
+      </motion.a>
     </Link>
   );
 };

@@ -25,7 +25,7 @@ const Signin = ({ providers }: Props) => {
 
   return (
     <Layout>
-      <div className="max-w-sm mx-auto flex flex-col items-center">
+      <main className="max-w-sm mx-auto flex flex-col items-center">
         <h2 className="text-xl text-center mb-8">
           Sign up now to add new parks, leave park reviews, and connect with
           other dog owners!
@@ -85,7 +85,7 @@ const Signin = ({ providers }: Props) => {
             )}
           </button>
         ))}
-      </div>
+      </main>
     </Layout>
   );
 };
