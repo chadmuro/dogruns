@@ -32,7 +32,7 @@ const Home = ({ parks }: Props) => {
       <main>
         <Hero />
         <section className="my-20" id="most-popular">
-          <h2 className="text-xl">{t("most-popular-parks")}</h2>
+          <h2 className="text-xl mb-4">{t("most-popular-parks")}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-start sm:justify-center items-stretch mb-8">
             {parks.map((park) => (
               <ParkCard key={park.id} park={park} />

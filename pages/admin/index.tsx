@@ -151,7 +151,11 @@ const Admin = ({ parks }: Props) => {
     );
   }
 
-  return <Layout>{parkData}</Layout>;
+  return (
+    <Layout>
+      <main>{parkData}</main>
+    </Layout>
+  );
 };
 
 export default Admin;

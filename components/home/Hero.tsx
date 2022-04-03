@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import Button from "../shared/Button";
@@ -47,7 +48,12 @@ const Hero = () => {
         </div>
       </div>
       <div className="hidden md:flex w-2/5 justify-end lg:justify-center">
-        <div className="rounded-full relative md:h-80 md:w-80 lg:h-96 lg:w-96 overflow-hidden flex justify-center">
+        <motion.div
+          className="rounded-full relative md:h-80 md:w-80 lg:h-96 lg:w-96 overflow-hidden flex justify-center"
+          initial={{ x: 200, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 1 }}
+        >
           <Image
             className="absolute"
             src="/images/hero1.jpg"
@@ -55,8 +61,13 @@ const Hero = () => {
             layout="fill"
             objectFit="cover"
           />
-        </div>
-        <div className="absolute top-96 lg:top-96 left-1/2">
+        </motion.div>
+        <motion.div
+          className="absolute top-96 lg:top-96 left-1/2"
+          initial={{ y: 200, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1, delay: 0.5 }}
+        >
           <div className="rounded-full relative h-48 w-48 lg:h-60 lg:w-60 overflow-hidden flex justify-center">
             <Image
               className="absolute"
@@ -66,7 +77,7 @@ const Hero = () => {
               objectFit="cover"
             />
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

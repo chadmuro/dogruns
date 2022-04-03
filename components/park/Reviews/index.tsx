@@ -25,7 +25,7 @@ const Reviews = ({ park }: ReviewsProps) => {
   const { data: session } = useSession();
   const [rating, setRating] = useState(5);
   const [posting, setPosting] = useState(false);
-  const { register, handleSubmit } = useForm<ReviewFormInputs>({
+  const { register, handleSubmit, reset } = useForm<ReviewFormInputs>({
     defaultValues: {
       comment: "",
     },
@@ -55,6 +55,8 @@ const Reviews = ({ park }: ReviewsProps) => {
       });
       const data = await response.json();
       refreshData();
+      reset();
+      setRating(5);
       toast(<Toast variant="success" message="New review added" />);
     } catch (err: any) {
       toast(<Toast variant="error" message={err.message} />);

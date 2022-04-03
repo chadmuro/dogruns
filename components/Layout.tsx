@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ReactNode } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
+import { motion } from "framer-motion";
 
 type Props = {
   children: ReactNode;
@@ -40,12 +41,26 @@ const Layout: React.FC<Props> = (props) => {
   const background = darkMode ? "#0f172a" : "#fff";
   const color = darkMode ? "#fff" : "#000";
 
+  const variants = {
+    hidden: { opacity: 0, x: -200, y: 0 },
+    enter: { opacity: 1, x: 0, y: 0 },
+    // exit: { opacity: 0, x: 100, y: -100 },
+  };
+
   return (
     <div className="min-h-screen flex flex-col justify-center items-stretch">
       <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-      <div className="px-4 max-w-screen-xl mx-auto flex-1 w-full">
+      <motion.div
+        key="main"
+        className="px-4 max-w-screen-xl mx-auto flex-1 w-full"
+        variants={variants} // Pass the variant object into Framer Motion
+        initial="hidden" // Set the initial state to variants.hidden
+        animate="enter" // Animated state to variants.enter
+        exit="exit" // Exit state (used later) to variants.exit
+        transition={{ type: "linear" }}
+      >
         {props.children}
-      </div>
+      </motion.div>
       <Footer />
       <style jsx global>{`
         html {
