@@ -4,5 +4,7 @@ import { useRouter } from 'next/router'
 export default function useRouterRefresh () {
   const { asPath, replace } = useRouter();
 
-  return useCallback(() => replace(asPath), [replace, asPath]);
+  return useCallback(() => replace(asPath, asPath, {
+    scroll: false
+  }), [replace, asPath]);
 }

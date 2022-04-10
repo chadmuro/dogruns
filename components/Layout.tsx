@@ -1,4 +1,5 @@
 import React, { useState, useEffect, ReactNode } from "react";
+import Head from "next/head";
 import Header from "./Header";
 import Footer from "./Footer";
 import { motion } from "framer-motion";
@@ -48,6 +49,10 @@ const Layout: React.FC<Props> = (props) => {
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-stretch">
+      <Head>
+        <title>Tokyo Dogruns</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
       <motion.div
         key="main"

@@ -1,3 +1,4 @@
+import { Dog } from "@prisma/client";
 import { FieldError, UseFormRegister } from "react-hook-form";
 import * as yup from "yup";
 import Button from "../../shared/Button";
@@ -29,6 +30,9 @@ interface DogFormProps {
   posting: boolean;
   onSubmit: () => void;
   hideForm?: () => void;
+  selectedDog: Dog | null;
+  onDeleteSubmit: (id: string) => Promise<void>;
+  deleting: boolean;
 }
 
 const DogForm = ({
@@ -36,7 +40,10 @@ const DogForm = ({
   errors,
   posting,
   onSubmit,
+  selectedDog,
   hideForm,
+  onDeleteSubmit,
+  deleting,
 }: DogFormProps) => {
   return (
     <form onSubmit={onSubmit}>
@@ -74,18 +81,28 @@ const DogForm = ({
         register={register}
         error={errors.birthdate}
       />
-      <div className="flex">
-        {!!hideForm && (
-          <div className="mr-4">
-            <Button
-              type="button"
-              text="Cancel"
-              variant="secondary"
-              onClick={hideForm}
-            />
-          </div>
+      <div className="flex justify-between">
+        <div className="flex">
+          {!!hideForm && (
+            <div className="mr-4">
+              <Button
+                type="button"
+                text="Cancel"
+                variant="secondary"
+                onClick={hideForm}
+              />
+            </div>
+          )}
+          <Button type="submit" text="Save" loading={posting} />
+        </div>
+        {!!selectedDog && (
+          <Button
+            type="button"
+            text="Delete"
+            loading={deleting}
+            onClick={() => onDeleteSubmit(selectedDog.id)}
+          />
         )}
-        <Button type="submit" text="Add dog" loading={posting} />
       </div>
     </form>
   );
