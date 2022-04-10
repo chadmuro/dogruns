@@ -1,19 +1,19 @@
+import { GetServerSideProps } from "next";
+import { useState, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { Dog } from "@prisma/client";
-import { useState, useEffect } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import DogForm, { dogSchema, NewDogInputs } from "../components/forms/Dog";
-import Layout from "../components/Layout";
-import DogCard from "../components/profile/DogCard";
-import Button from "../components/shared/Button";
 import { getSession, useSession } from "next-auth/react";
-import prisma from "../lib/prisma";
-import { GetServerSideProps } from "next";
-import uploadImage from "../utils/uploadImage";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import Toast from "../components/shared/Toast";
-import useRouterRefresh from "../hooks/useRouterRefresh";
+import DogForm, { dogSchema, NewDogInputs } from "components/forms/Dog";
+import Layout from "components/Layout";
+import DogCard from "components/profile/DogCard";
+import Button from "components/shared/Button";
+import prisma from "lib/prisma";
+import uploadImage from "utils/uploadImage";
+import Toast from "components/shared/Toast";
+import useRouterRefresh from "hooks/useRouterRefresh";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -55,6 +55,7 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedDog, setSelectedDog] = useState<Dog | null>(null);
   const [posting, setPosting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const { data: session } = useSession();
   const refreshData = useRouterRefresh();
 
@@ -140,6 +141,23 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
     setPosting(false);
   };
 
+  const onDeleteSubmit = async (id: string) => {
+    setDeleting(true);
+    try {
+      const response = await fetch(`/api/dog/delete/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+      await response.json();
+      refreshData();
+      hideForm();
+      toast(<Toast variant="success" message="Dog information deleted" />);
+    } catch (err: any) {
+      toast(<Toast variant="error" message={err.message} />);
+    }
+    setDeleting(false);
+  };
+
   useEffect(() => {
     if (selectedDog) {
       reset({
@@ -186,11 +204,14 @@ const Profile = ({ dogs, favoriteParks }: Props) => {
             errors={errors}
             posting={posting}
             hideForm={hideForm}
+            selectedDog={selectedDog}
             onSubmit={
               !!selectedDog
                 ? handleSubmit(onEditSubmit)
                 : handleSubmit(onSubmit)
             }
+            onDeleteSubmit={onDeleteSubmit}
+            deleting={deleting}
           />
         ) : (
           <Button

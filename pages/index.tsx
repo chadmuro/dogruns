@@ -2,11 +2,11 @@ import { GetStaticProps } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { Park } from "@prisma/client";
-import prisma from "../lib/prisma";
-import Layout from "../components/Layout";
-import Hero from "../components/home/Hero";
-import ParkCard from "../components/home/ParkCard";
-import Button from "../components/shared/Button";
+import prisma from "lib/prisma";
+import Layout from "components/Layout";
+import Hero from "components/home/Hero";
+import ParkCard from "components/home/ParkCard";
+import Button from "components/shared/Button";
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const parks = await prisma.park.findMany({
