@@ -31,6 +31,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           user: {
             select: {
               name: true,
+              email: true,
               image: true,
             },
           },
@@ -64,6 +65,7 @@ type Props = {
     reviews: (Review & {
       user: {
         name: string;
+        email: string;
         image: string;
       };
     })[];

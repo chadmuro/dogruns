@@ -14,6 +14,7 @@ interface ReviewsProps {
     reviews: (Review & {
       user: {
         name: string;
+        email: string;
         image: string;
       };
     })[];
@@ -60,6 +61,20 @@ const Reviews = ({ park }: ReviewsProps) => {
     setPosting(false);
   };
 
+  const onDeleteSubmit = async (id: string) => {
+    try {
+      const response = await fetch(`/api/review/delete/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      refreshData();
+      toast(<Toast variant="success" message="Review deleted" />);
+    } catch (err: any) {
+      toast(<Toast variant="error" message={err.message} />);
+    }
+  };
+
   return (
     <section>
       <h2 className="text-xl mb-4">Reviews</h2>
@@ -75,7 +90,11 @@ const Reviews = ({ park }: ReviewsProps) => {
         <p className="mb-8">Sign in to leave a review</p>
       )}
       {park.reviews.map((review) => (
-        <ReviewCard key={review.id} review={review} />
+        <ReviewCard
+          key={review.id}
+          review={review}
+          onDeleteSubmit={onDeleteSubmit}
+        />
       ))}
     </section>
   );
